@@ -76,18 +76,23 @@ const gameWidth = 500;
 const gameHeight = 300;
 const windowWidth = Math.max(window.windowWidth, gameWidth);
 const windowHeight = Math.max(window.windowHeight, gameHeight);
- 
+
 
 document.addEventListener("DOMContentLoaded",() => {
+
   const canvas = document.getElementById('canvas');
   canvas.width = gameWidth;
   canvas.height = gameHeight;
   const ctx = canvas.getContext('2d');
   const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](ctx);
-  gameBoard.render();
 
-  document.addEventListener("mousemove", (e) => {
-    console.log(e);
+
+  gameBoard.render(gameWidth, gameHeight);
+
+  canvas.addEventListener("mousemove", (e) => {
+
+    gameBoard.crossHair.X = e.offsetX;
+    gameBoard.crossHair.Y = e.offsetY;
   });
 
 
@@ -105,14 +110,28 @@ document.addEventListener("DOMContentLoaded",() => {
 class Board {
   constructor(ctx) {
     this.ctx = ctx;
-    this.crosshair = new __WEBPACK_IMPORTED_MODULE_0__crosshair__["a" /* default */]();
-    this.crosshair.render = this.crosshair.render.bind(this);
+    this.crossHair = new __WEBPACK_IMPORTED_MODULE_0__crosshair__["a" /* default */]();
+    this.render = this.render.bind(this);
   }
 
-  render() {
-    this.crosshair.render();
+  render(gameWidth, gameHeight) {
+
+
+    this.ctx.clearRect(0,0,gameWidth, gameHeight);
+
+    // this.ctx.fillStyle = Board.BACKGROUND_COLOR;
+    // this.ctx.fillRect(0,0,gameWidth, gameHeight);
+
+    this.crossHair.render(this.ctx);
+
+    window.requestAnimationFrame(() => this.render(gameWidth, gameHeight));
   }
+
 }
+
+Board.BACKGROUND_COLOR = "#FFFFFF";
+
+
 
 /* harmony default export */ __webpack_exports__["a"] = (Board);
 
@@ -123,16 +142,19 @@ class Board {
 
 "use strict";
 class CrossHair {
-  constructor() {
+  constructor(ctx) {
+
+    this.X = 0;
+    this.Y =0;
     this.width = 10;
     this.height = 10;
+
+  }
+
+  render(ctx) {
     
+    ctx.fillRect(this.X, this.Y, this.width, this.height);
   }
-
-  render(x,y) {
-    this.ctx.fillRect(10,10,10,10);
-  }
-
 
 }
 

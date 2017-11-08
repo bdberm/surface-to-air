@@ -1,4 +1,10 @@
+body {
+  width: inherit;
+}
+
 canvas {
   border: 10px solid blue;
+  display: block;
   margin: 0 auto;
+  cursor: none;
 }
