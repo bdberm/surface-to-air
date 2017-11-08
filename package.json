@@ -1,0 +1,28 @@
+{
+  "name": "surface-to-air",
+  "version": "1.0.0",
+  "description": "## Background",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "webpack": "^3.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdberm/surface-to-air.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdberm/surface-to-air/issues"
+  },
+  "homepage": "https://github.com/bdberm/surface-to-air#readme"
+}
