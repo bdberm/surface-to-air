@@ -65,12 +65,78 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
+
+
+const gameWidth = 500;
+const gameHeight = 300;
+const windowWidth = Math.max(window.windowWidth, gameWidth);
+const windowHeight = Math.max(window.windowHeight, gameHeight);
+ 
 
 document.addEventListener("DOMContentLoaded",() => {
-  console.log('hello!');
+  const canvas = document.getElementById('canvas');
+  canvas.width = gameWidth;
+  canvas.height = gameHeight;
+  const ctx = canvas.getContext('2d');
+  const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](ctx);
+  gameBoard.render();
+
+  document.addEventListener("mousemove", (e) => {
+    console.log(e);
+  });
+
+
 });
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(2);
+
+
+class Board {
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.crosshair = new __WEBPACK_IMPORTED_MODULE_0__crosshair__["a" /* default */]();
+    this.crosshair.render = this.crosshair.render.bind(this);
+  }
+
+  render() {
+    this.crosshair.render();
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Board);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class CrossHair {
+  constructor() {
+    this.width = 10;
+    this.height = 10;
+    
+  }
+
+  render(x,y) {
+    this.ctx.fillRect(10,10,10,10);
+  }
+
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (CrossHair);
 
 
 /***/ })
