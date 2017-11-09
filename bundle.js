@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,9 +68,42 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const calcDist = (pos1, pos2) => {
+
+  const dist = Math.sqrt(
+    Math.pow((pos2[0] - pos1[0]),2) +
+    Math.pow((pos2[1] - pos1[1]),2)
+  );
+  return dist;
+};
+/* unused harmony export calcDist */
+
+
+const calcPointBetween = (startPos, endPos, length) => {
+  const startProportion = (length / calcDist(startPos, endPos));
+  const endProportion = (1 - startProportion);
+
+  const posX = (startProportion * startPos[0])
+        + (endProportion * endPos[0]);
+
+  const posY = (startProportion * startPos[1])
+        + (endProportion * endPos[1]);
+
+  return [posX, posY];            
+
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = calcPointBetween;
+
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(0);
 
 
 
@@ -92,7 +125,6 @@ document.addEventListener("DOMContentLoaded",() => {
 
   canvas.addEventListener("mousemove", (e) => {
 
-    
     const coords = [e.offsetX, e.offsetY];
     gameBoard.crossHair.pos = coords;
 
@@ -102,12 +134,14 @@ document.addEventListener("DOMContentLoaded",() => {
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(0);
+
 
 
 
@@ -126,11 +160,15 @@ class Board {
 
     this.ctx.clearRect(0,0, this.gameWidth, this.gameHeight);
 
-    // this.ctx.fillStyle = Board.BACKGROUND_COLOR;
-    // this.ctx.fillRect(0,0,gameWidth, gameHeight);
+
 
     this.crossHair.render(this.ctx);
-    this.mainCannon.render(this.ctx, this.crossHair.pos);
+
+    const cannonEndPos = Object(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* calcPointBetween */])(this.crossHair.pos,
+      this.mainCannon.startPos,
+      this.mainCannon.length);
+
+    this.mainCannon.render(this.ctx, cannonEndPos);
 
 
     window.requestAnimationFrame(() => this.render(this.gameWidth, this.gameHeight));
@@ -146,7 +184,7 @@ Board.BACKGROUND_COLOR = "#FFFFFF";
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -170,12 +208,13 @@ class CrossHair {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const CANNON_LENGTH = 20;
-const CANNON_WIDTH = 5;
+const CANNON_LENGTH = 40;
+const CANNON_WIDTH = 15;
+const CANNON_COLOR = "#43464B";
 
 // const Cannon = (startPos, endPos, ctx) => {
 // };
@@ -184,42 +223,31 @@ class Cannon {
   constructor(startPos) {
     this.width = CANNON_WIDTH;
     this.length = CANNON_LENGTH;
+    this.color = CANNON_COLOR;
     this.startPos = startPos;
 
   }
 
   render(ctx, endPos) {
 
-
     ctx.beginPath();
     ctx.moveTo(this.startPos[0], this.startPos[1]);
     ctx.lineTo(endPos[0], endPos[1]);
     ctx.lineWidth = this.width;
+    ctx.strokeStyle = this.color;
     ctx.stroke();
     ctx.closePath();
+
+
+    ctx.fillRect(this.startPos[0]-20, this.startPos[1]-10, 40, 10);
+
+
 
   }
 
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Cannon);
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const calcDist = (pos1, pos2) => {
-  
-  const dist = Math.sqrt(
-    Math.pow((pos2[0] - pos1[0]),2) +
-    Math.pow((pos2[1] - pos1[1]),2)
-  );
-  return dist;
-};
-/* unused harmony export calcDist */
-
 
 
 /***/ })
