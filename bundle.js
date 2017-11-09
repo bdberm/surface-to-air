@@ -70,7 +70,7 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(3);
 
 
 
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded",() => {
     const coords = [e.offsetX, e.offsetY];
     gameBoard.crossHair.X = e.offsetX;
     gameBoard.crossHair.Y = e.offsetY;
-    const slope = Object(__WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* calcCannonEndPoint */])(gameWidth/2, coords );
+    const slope = Object(__WEBPACK_IMPORTED_MODULE_1__util__["a" /* calcCannonEndPoint */])(gameWidth/2, coords );
     console.log(slope);
   });
 
