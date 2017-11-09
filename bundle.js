@@ -133,6 +133,10 @@ document.addEventListener("DOMContentLoaded",() => {
 
   });
 
+  canvas.addEvenListener("click", (e) => {
+    
+  });
+
 });
 
 
@@ -143,7 +147,9 @@ document.addEventListener("DOMContentLoaded",() => {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__laser__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__util__ = __webpack_require__(0);
+
 
 
 
@@ -155,6 +161,7 @@ class Board {
     this.gameHeight = canvas.height;
     this.crossHair = new __WEBPACK_IMPORTED_MODULE_0__crosshair__["a" /* default */]();
     this.mainCannon = new __WEBPACK_IMPORTED_MODULE_1__cannon__["a" /* default */]([canvas.width/2, canvas.height]);
+    this.lasers = [];
     this.render = this.render.bind(this);
   }
 
@@ -164,6 +171,7 @@ class Board {
     this.ctx.clearRect(0,0, this.gameWidth, this.gameHeight);
     this.crossHair.render(this.ctx);
     this.renderCannon();
+    this.renderLasers();
 
     window.requestAnimationFrame(() =>
     this.render(this.gameWidth, this.gameHeight));
@@ -171,9 +179,16 @@ class Board {
 
   renderCannon() {
     const cannonStart = this.mainCannon.startPos;
-    const cannonVector = Object(__WEBPACK_IMPORTED_MODULE_2__util__["b" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
-    const cannonEndPos = Object(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* calcPosDistAway */])(cannonStart, cannonVector, this.mainCannon.length);
-    this.mainCannon.render(this.ctx, cannonEndPos);
+    const crossHairVector = Object(__WEBPACK_IMPORTED_MODULE_3__util__["b" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
+    this.mainCannon.calcEndPoint(crossHairVector);
+    this.mainCannon.render(this.ctx);
+  }
+
+  renderLasers() {
+    this.lasers.forEach((laser) => {
+      laser.move();
+      laser.render(this.ctx);
+    });
   }
 
 }
@@ -214,6 +229,9 @@ class CrossHair {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
+
+
 const CANNON_LENGTH = 40;
 const CANNON_WIDTH = 15;
 const CANNON_COLOR = "#43464B";
@@ -226,14 +244,15 @@ class Cannon {
     this.length = CANNON_LENGTH;
     this.color = CANNON_COLOR;
     this.startPos = startPos;
+    this.endPos = [startPos[0], startPos[1] - this.length];
 
   }
 
-  render(ctx, endPos) {
+  render(ctx) {
 
     ctx.beginPath();
     ctx.moveTo(this.startPos[0], this.startPos[1]);
-    ctx.lineTo(endPos[0], endPos[1]);
+    ctx.lineTo(this.endPos[0], this.endPos[1]);
     ctx.lineWidth = this.width;
     ctx.strokeStyle = this.color;
     ctx.stroke();
@@ -242,13 +261,62 @@ class Cannon {
 
     ctx.fillRect(this.startPos[0]-20, this.startPos[1]-10, 40, 10);
 
+  }
 
-
+  calcEndPoint(unitVector) {
+    this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["a" /* calcPosDistAway */])(this.startPos, unitVector, this.length);
   }
 
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Cannon);
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
+
+
+const LASER_LENGTH = 15;
+const LASER_WIDTH = 5;
+const LASER_COLOR = "#49fb35";
+const LASER_VEL = 5;
+
+
+
+
+class Laser {
+  constructor(startPos, endVectorPos) {
+    this.startPos = startPos;
+    this.length = LASER_LENGTH;
+    this.width = LASER_WIDTH;
+    this.color = LASER_COLOR;
+    this.vel = LASER_VEL;
+    this.unitVector = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["b" /* calcUnitVector */])(startPos, endVectorPos);
+    this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["a" /* calcPosDistAway */])(startPos, this.unitVector, this.length);
+  }
+
+  render(ctx) {
+
+    ctx.beginPath();
+    ctx.moveTo(this.startPos[0], this.startPos[1]);
+    ctx.lineTo(this.endPos[0], this.endPos[1]);
+    ctx.lineWidth = this.width;
+    ctx.strokeStyle = this.color;
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  move() {
+    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["a" /* calcPosDistAway */])(this.startPos, this.unitVector, this.vel);
+    this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["a" /* calcPosDistAway */])(this.endPos, this.unitVector, this.vel);
+  }
+}
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Laser);
 
 
 /***/ })
