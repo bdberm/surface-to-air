@@ -68,11 +68,11 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const calcDist = (pos1, pos2) => {
+const calcDist = (startPos, endPos) => {
 
   const dist = Math.sqrt(
-    Math.pow((pos2[0] - pos1[0]),2) +
-    Math.pow((pos2[1] - pos1[1]),2)
+    Math.pow((endPos[0] - startPos[0]),2) +
+    Math.pow((endPos[1] - startPos[1]),2)
   );
   return dist;
 };
@@ -89,10 +89,22 @@ const calcPointBetween = (startPos, endPos, length) => {
   const posY = (startProportion * startPos[1])
         + (endProportion * endPos[1]);
 
-  return [posX, posY];            
+  return [posX, posY];
 
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = calcPointBetween;
+/* unused harmony export calcPointBetween */
+
+
+
+const calcUnitVector = (startPos, endPos) => {
+  const vector = [(endPos[0] - startPos[0]), (endPos[1] - startPos[1])];
+  const dist = calcDist(startPos, endPos);
+
+  const uv = [vector[0] / dist, vector[1] / dist];
+  debugger
+  return uv;
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = calcUnitVector;
 
 
 
@@ -156,18 +168,16 @@ class Board {
   }
 
   render() {
-
+    const cannonStart = this.mainCannon.startPos;
 
     this.ctx.clearRect(0,0, this.gameWidth, this.gameHeight);
-
-
-
     this.crossHair.render(this.ctx);
 
-    const cannonEndPos = Object(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* calcPointBetween */])(this.crossHair.pos,
-      this.mainCannon.startPos,
-      this.mainCannon.length);
+    const cannonVector = Object(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
+    const cannonEndX = cannonStart[0] + (cannonVector[0] * this.mainCannon.length);
+    const cannonEndY = cannonStart[1] + (cannonVector[1] * this.mainCannon.length);
 
+    const cannonEndPos = [cannonEndX, cannonEndY];
     this.mainCannon.render(this.ctx, cannonEndPos);
 
 
