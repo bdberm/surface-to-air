@@ -161,7 +161,7 @@ class CrossHair {
 
   render(ctx) {
 
-    ctx.fillRect(this.pos[0], this.pos[1], this.width, this.height);
+    ctx.fillRect(this.pos[0] - (this.width/2) , this.pos[1] - (this.height/2), this.width, this.height);
   }
 
 }
