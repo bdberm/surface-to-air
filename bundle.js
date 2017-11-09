@@ -70,7 +70,7 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(4);
 
 
 
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded",() => {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(3);
 
 
 
@@ -174,23 +174,6 @@ class CrossHair {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const calcDist = (pos1, pos2) => {
-  
-  const dist = Math.sqrt(
-    Math.pow((pos2[0] - pos1[0]),2) +
-    Math.pow((pos2[1] - pos1[1]),2)
-  );
-  return dist;
-};
-/* unused harmony export calcDist */
-
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 const CANNON_LENGTH = 20;
 const CANNON_WIDTH = 5;
 
@@ -220,6 +203,23 @@ class Cannon {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Cannon);
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const calcDist = (pos1, pos2) => {
+  
+  const dist = Math.sqrt(
+    Math.pow((pos2[0] - pos1[0]),2) +
+    Math.pow((pos2[1] - pos1[1]),2)
+  );
+  return dist;
+};
+/* unused harmony export calcDist */
+
 
 
 /***/ })
