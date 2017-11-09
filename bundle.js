@@ -79,32 +79,23 @@ const calcDist = (startPos, endPos) => {
 /* unused harmony export calcDist */
 
 
-const calcPointBetween = (startPos, endPos, length) => {
-  const startProportion = (length / calcDist(startPos, endPos));
-  const endProportion = (1 - startProportion);
-
-  const posX = (startProportion * startPos[0])
-        + (endProportion * endPos[0]);
-
-  const posY = (startProportion * startPos[1])
-        + (endProportion * endPos[1]);
-
-  return [posX, posY];
-
-};
-/* unused harmony export calcPointBetween */
-
-
 
 const calcUnitVector = (startPos, endPos) => {
   const vector = [(endPos[0] - startPos[0]), (endPos[1] - startPos[1])];
   const dist = calcDist(startPos, endPos);
 
-  const uv = [vector[0] / dist, vector[1] / dist];
-  debugger
-  return uv;
+  return [vector[0] / dist, vector[1] / dist];
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = calcUnitVector;
+/* harmony export (immutable) */ __webpack_exports__["b"] = calcUnitVector;
+
+
+const calcPosDistAway = (startPos, unitVector, dist) => {
+  return [
+    startPos[0] + (dist * unitVector[0]),
+    startPos[1] + (dist * unitVector[1])
+  ];
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = calcPosDistAway;
 
 
 
@@ -168,20 +159,21 @@ class Board {
   }
 
   render() {
-    const cannonStart = this.mainCannon.startPos;
+
 
     this.ctx.clearRect(0,0, this.gameWidth, this.gameHeight);
     this.crossHair.render(this.ctx);
+    this.renderCannon();
 
-    const cannonVector = Object(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
-    const cannonEndX = cannonStart[0] + (cannonVector[0] * this.mainCannon.length);
-    const cannonEndY = cannonStart[1] + (cannonVector[1] * this.mainCannon.length);
+    window.requestAnimationFrame(() =>
+    this.render(this.gameWidth, this.gameHeight));
+  }
 
-    const cannonEndPos = [cannonEndX, cannonEndY];
+  renderCannon() {
+    const cannonStart = this.mainCannon.startPos;
+    const cannonVector = Object(__WEBPACK_IMPORTED_MODULE_2__util__["b" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
+    const cannonEndPos = Object(__WEBPACK_IMPORTED_MODULE_2__util__["a" /* calcPosDistAway */])(cannonStart, cannonVector, this.mainCannon.length);
     this.mainCannon.render(this.ctx, cannonEndPos);
-
-
-    window.requestAnimationFrame(() => this.render(this.gameWidth, this.gameHeight));
   }
 
 }
@@ -226,8 +218,7 @@ const CANNON_LENGTH = 40;
 const CANNON_WIDTH = 15;
 const CANNON_COLOR = "#43464B";
 
-// const Cannon = (startPos, endPos, ctx) => {
-// };
+
 
 class Cannon {
   constructor(startPos) {
