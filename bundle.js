@@ -133,8 +133,8 @@ document.addEventListener("DOMContentLoaded",() => {
 
   });
 
-  canvas.addEvenListener("click", (e) => {
-    
+  canvas.addEventListener("click", (e) => {
+    gameBoard.addLaser();
   });
 
 });
@@ -163,6 +163,11 @@ class Board {
     this.mainCannon = new __WEBPACK_IMPORTED_MODULE_1__cannon__["a" /* default */]([canvas.width/2, canvas.height]);
     this.lasers = [];
     this.render = this.render.bind(this);
+  }
+
+  addLaser() {
+    const newLaser = new __WEBPACK_IMPORTED_MODULE_2__laser__["a" /* default */](this.mainCannon.endPos, this.crossHair.pos);
+    this.lasers.push(newLaser);
   }
 
   render() {
@@ -316,7 +321,7 @@ class Laser {
   }
 }
 
-/* unused harmony default export */ var _unused_webpack_default_export = (Laser);
+/* harmony default export */ __webpack_exports__["a"] = (Laser);
 
 
 /***/ })
