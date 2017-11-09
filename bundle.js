@@ -70,6 +70,8 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_js__ = __webpack_require__(3);
+
 
 
 const gameWidth = 500;
@@ -90,9 +92,11 @@ document.addEventListener("DOMContentLoaded",() => {
   gameBoard.render(gameWidth, gameHeight);
 
   canvas.addEventListener("mousemove", (e) => {
-
+    const coords = [e.offsetX, e.offsetY];
     gameBoard.crossHair.X = e.offsetX;
     gameBoard.crossHair.Y = e.offsetY;
+    const slope = Object(__WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* calcCannonEndPoint */])(gameWidth/2, coords );
+    console.log(slope);
   });
 
 
@@ -159,6 +163,20 @@ class CrossHair {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (CrossHair);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const calcCannonEndPoint = (xOffset, coords, length) => {
+
+  const slope = (coords[1]) / (coords[0] - xOffset);
+  return slope;
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = calcCannonEndPoint;
+
 
 
 /***/ })
