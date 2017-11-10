@@ -164,13 +164,18 @@ document.addEventListener("DOMContentLoaded",() => {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__laser__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bomb__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__util__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__collisions__ = __webpack_require__(7);
 
 
 
 
 
 
-const INTERVAL = 1500;
+
+
+const BOMB_INTERVAL = 1500;
+const COLLISION_INTERVAL = 10;
+
 
 class Board {
   constructor(canvas) {
@@ -182,20 +187,27 @@ class Board {
     this.mainCannon = new __WEBPACK_IMPORTED_MODULE_1__cannon__["a" /* default */]([canvas.width/2, canvas.height]);
     this.lasers = [];
     this.bombs = [];
-    // this.bomb = new Bomb(RandomStartPos(this.width), RandomEndPos(this.width,this.height));
     this.render = this.render.bind(this);
     this.generateBombs();
+    this.checkCollisions();
+
   }
 
   generateBombs() {
 
+
     window.setInterval(() => {
       const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_4__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_4__util__["a" /* RandomEndPos */])(this.width,this.height));
       this.bombs.push(newBomb);
-    },INTERVAL);
+    },BOMB_INTERVAL);
 
   }
 
+  checkCollisions() {
+    window.setInterval(() => {
+      this.checkLaserBombCollisions();
+    }, COLLISION_INTERVAL);
+  }
 
 
   addLaser() {
@@ -204,7 +216,6 @@ class Board {
   }
 
   render() {
-
 
     this.ctx.clearRect(0,0, this.width, this.height);
     this.crossHair.render(this.ctx);
@@ -225,6 +236,28 @@ class Board {
     this.mainCannon.render(this.ctx);
   }
 
+  checkLaserBombCollisions() {
+    // debugger
+    const lasers = this.lasers;
+    const bombs = this.bombs;
+
+    lasers.forEach((laser) => {
+      bombs.forEach((bomb) => {
+        if(Object(__WEBPACK_IMPORTED_MODULE_5__collisions__["checkBombLaserCollision"])(laser, bomb)) {
+          this.processLaserBombCollision(laser, bomb);
+        }
+      });
+    });
+  }
+
+  processLaserBombCollision(laser,bomb) {
+    console.log("boom");
+    const laserIdx = this.lasers.indexOf(laser);
+    const bombIdx = this.bombs.indexOf(bomb);
+    delete this.lasers[laserIdx];
+    delete this.bombs[bombIdx];
+
+  }
 
 
   renderCollection(array) {
@@ -324,7 +357,7 @@ class Cannon {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
 
 
-const LASER_LENGTH = 30;
+const LASER_LENGTH = 15;
 const LASER_WIDTH = 3;
 const LASER_COLOR = "#ff0101";
 const LASER_VEL = 10;
@@ -369,8 +402,6 @@ class Laser {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__collisions__ = __webpack_require__(7);
-
 
 
 
@@ -378,7 +409,7 @@ const BOMB_HEIGHT = 50;
 const BOMB_WIDTH = 50;
 const BOMB_MAX_VEL = 2.5;
 const BOMB_MIN_VEL = 1;
-const COLLIDABLE_WIDTH_RATIO = .37;
+const COLLIDABLE_WIDTH_RATIO = .41;
 
 
 class Bomb {
@@ -388,28 +419,25 @@ class Bomb {
     this.width = BOMB_WIDTH;
     this.height = BOMB_HEIGHT;
     this.vel =(Math.random() * (BOMB_MAX_VEL - BOMB_MIN_VEL)) + BOMB_MIN_VEL;
-    this.endPos = startVectorPos;
     this.unitVector = Object(__WEBPACK_IMPORTED_MODULE_0__util__["d" /* calcUnitVector */])(startVectorPos, endVectorPos);
-    this.endPos = startVectorPos;
-    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.height * -1);
-
+    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(startVectorPos, this.unitVector, this.height * -1);
   }
 
   render(ctx) {
     // debugger
-    ctx.drawImage(this.img, this.startPos[0] - (this.width/2) , this.startPos[1] - (this.height/2), this.width, this.height);
+    ctx.drawImage(this.img, this.startPos[0], this.startPos[1], this.width, this.height);
   }
 
   move() {
     this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(this.startPos, this.unitVector, this.vel);
-    this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.vel);
   }
 
   hitbox() {
-    const adjust = (COLLIDABLE_WIDTH_RATIO/2) * this.width;
+    const xAdjust = ((1 - COLLIDABLE_WIDTH_RATIO) * this.width)/2;
 
-    const topLeft = [this.startPos[0] - adjust , this.startPos[1]];
-    const bottomRight = [this.endPos[0] + adjust, this.endPos[1]];
+
+    const topLeft = [this.startPos[0] + xAdjust , this.startPos[1]];
+    const bottomRight = [this.startPos[0] + this.width - xAdjust, this.startPos[1] + this.height];
 
     return [topLeft, bottomRight];
 
@@ -449,7 +477,7 @@ const checkPosInHitbox = (pos, hitbox) => {
   const y = pos[1];
   let inBox = false;
 
-  if (x >= topLeft[0] && x <= bottomRight[1]
+  if (x >= topLeft[0] && x <= bottomRight[0]
     && y >= topLeft[1] && y <= bottomRight[1]) {
       inBox = true;
   }
