@@ -189,7 +189,7 @@ class Board {
     this.lasers = [];
     this.bombs = [];
     this.lasers = [];
-    this.explosion = new __WEBPACK_IMPORTED_MODULE_6__explosion__["a" /* default */]([100,100]);
+    this.explosions = [];
     this.render = this.render.bind(this);
     this.generateBombs();
     this.checkCollisions();
@@ -221,11 +221,11 @@ class Board {
   render() {
 
     this.ctx.clearRect(0,0, this.width, this.height);
-    this.explosion.render(this.ctx);
     this.crossHair.render(this.ctx);
     this.renderCannon();
     this.renderCollection(this.lasers);
     this.renderCollection(this.bombs);
+    this.renderCollection(this.explosions);
 
 
 
@@ -254,19 +254,29 @@ class Board {
   }
 
   processLaserBombCollision(laser,bomb) {
-    console.log("boom");
+    const newExplosion = new __WEBPACK_IMPORTED_MODULE_6__explosion__["a" /* default */](bomb.startPos);
+    this.explosions.push(newExplosion);
+    window.setTimeout(()=> {
+      const explosionIdx = this.explosions.indexOf(newExplosion);
+      delete this.explosions[explosionIdx];
+    }, 700);
+
     const laserIdx = this.lasers.indexOf(laser);
     const bombIdx = this.bombs.indexOf(bomb);
     delete this.lasers[laserIdx];
     delete this.bombs[bombIdx];
     this.explode.play();
 
+
   }
+
 
 
   renderCollection(array) {
     array.forEach((item) => {
-      item.move();
+      if (item instanceof __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */] || item instanceof __WEBPACK_IMPORTED_MODULE_2__laser__["a" /* default */]) {
+        item.move();
+      }
       item.render(this.ctx);
     });
   }
@@ -525,7 +535,7 @@ class Explosion {
 
         window.clearInterval(explode);
       }
-    },25);
+    },20);
 
 
   }
