@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded",() => {
 
 
 
-const BOMB_INTERVAL = 1500;
+const BOMB_INTERVAL = 1000;
 const COLLISION_INTERVAL = 10;
 
 
@@ -190,6 +190,7 @@ class Board {
     this.render = this.render.bind(this);
     this.generateBombs();
     this.checkCollisions();
+    this.explode = new Audio('./assets/explosion.wav');
 
   }
 
@@ -237,7 +238,6 @@ class Board {
   }
 
   checkLaserBombCollisions() {
-    // debugger
     const lasers = this.lasers;
     const bombs = this.bombs;
 
@@ -256,6 +256,7 @@ class Board {
     const bombIdx = this.bombs.indexOf(bomb);
     delete this.lasers[laserIdx];
     delete this.bombs[bombIdx];
+    this.explode.play();
 
   }
 
@@ -357,7 +358,7 @@ class Cannon {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
 
 
-const LASER_LENGTH = 15;
+const LASER_LENGTH = 25;
 const LASER_WIDTH = 3;
 const LASER_COLOR = "#ff0101";
 const LASER_VEL = 10;
