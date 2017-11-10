@@ -7,4 +7,6 @@ canvas {
   display: block;
   margin: 0 auto;
   cursor: none;
+  background-image: url("../assets/mountains.jpg");
+  background-size:cover;
 }

@@ -291,8 +291,8 @@ class Cannon {
 
 
 const LASER_LENGTH = 30;
-const LASER_WIDTH = 5;
-const LASER_COLOR = "#49fb35";
+const LASER_WIDTH = 3;
+const LASER_COLOR = "#ff0101";
 const LASER_VEL = 8;
 
 
