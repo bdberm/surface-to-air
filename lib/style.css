@@ -6,6 +6,7 @@ canvas {
   border: 10px solid blue;
   display: block;
   margin: 0 auto;
+  margin-top:  50px;
   cursor: none;
   background-image: url("../assets/mountains.jpg");
   background-size:cover;
