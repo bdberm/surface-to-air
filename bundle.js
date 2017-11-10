@@ -401,6 +401,16 @@ class Bomb {
     this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.vel);
   }
 
+  hitbox() {
+    const adjust = (COLLIDABLE_WIDTH_RATIO/2) * this.width;
+
+    const topLeft = [this.startPos[0] - adjust , this.startPos[1]];
+    const bottomRight = [this.endPos[0] + adjust, this.endPos[1]];
+
+    return [topLeft, bottomRight];
+
+  }
+
 
 
 
