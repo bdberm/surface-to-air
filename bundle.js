@@ -110,8 +110,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-const gameWidth = 500;
-const gameHeight = 300;
+const gameWidth = 800;
+const gameHeight = 500;
 const windowWidth = Math.max(window.windowWidth, gameWidth);
 const windowHeight = Math.max(window.windowHeight, gameHeight);
 
@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded",() => {
   canvas.width = gameWidth;
   canvas.height = gameHeight;
   const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](canvas);
+  const laserShot = new Audio("./assets/laser.wav");
 
 
   gameBoard.render();
@@ -135,6 +136,7 @@ document.addEventListener("DOMContentLoaded",() => {
 
   canvas.addEventListener("click", (e) => {
     gameBoard.addLaser();
+    laserShot.play();
   });
 
 });
@@ -240,7 +242,7 @@ class CrossHair {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
 
 
-const CANNON_LENGTH = 40;
+const CANNON_LENGTH = 50;
 const CANNON_WIDTH = 15;
 const CANNON_COLOR = "#43464B";
 
@@ -288,10 +290,10 @@ class Cannon {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
 
 
-const LASER_LENGTH = 15;
+const LASER_LENGTH = 30;
 const LASER_WIDTH = 5;
 const LASER_COLOR = "#49fb35";
-const LASER_VEL = 5;
+const LASER_VEL = 8;
 
 
 
