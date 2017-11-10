@@ -219,8 +219,9 @@ class Board {
   }
 
   render() {
-    this.explosion.render(this.ctx);
+
     this.ctx.clearRect(0,0, this.width, this.height);
+    this.explosion.render(this.ctx);
     this.crossHair.render(this.ctx);
     this.renderCannon();
     this.renderCollection(this.lasers);
@@ -520,11 +521,13 @@ class Explosion {
   animate() {
     let explode = window.setInterval(() => {
       this.frame += 1;
-    },50);
+      if (this.frame > 36) {
 
-    if (this.frame > 35) {
-      window.clearInterval(explode);
-    }
+        window.clearInterval(explode);
+      }
+    },25);
+
+
   }
 }
 
