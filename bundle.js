@@ -118,6 +118,8 @@ const RandomEndPos = (boardWidth, boardHeight) => (
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__collisions__ = __webpack_require__(7);
+
 
 
 const gameWidth = 800;
@@ -127,7 +129,7 @@ const windowHeight = Math.max(window.windowHeight, gameHeight);
 
 
 document.addEventListener("DOMContentLoaded",() => {
-
+  window.Collisions = __WEBPACK_IMPORTED_MODULE_1__collisions__;
   const canvas = document.getElementById('canvas');
   canvas.width = gameWidth;
   canvas.height = gameHeight;
@@ -366,7 +368,9 @@ class Laser {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__collisions__ = __webpack_require__(7);
+
 
 
 
@@ -385,9 +389,9 @@ class Bomb {
     this.height = BOMB_HEIGHT;
     this.vel =(Math.random() * (BOMB_MAX_VEL - BOMB_MIN_VEL)) + BOMB_MIN_VEL;
     this.endPos = startVectorPos;
-    this.unitVector = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["d" /* calcUnitVector */])(startVectorPos, endVectorPos);
+    this.unitVector = Object(__WEBPACK_IMPORTED_MODULE_0__util__["d" /* calcUnitVector */])(startVectorPos, endVectorPos);
     this.endPos = startVectorPos;
-    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.height * -1);
+    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.height * -1);
 
   }
 
@@ -397,8 +401,8 @@ class Bomb {
   }
 
   move() {
-    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* calcPosDistAway */])(this.startPos, this.unitVector, this.vel);
-    this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.vel);
+    this.startPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(this.startPos, this.unitVector, this.vel);
+    this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util__["c" /* calcPosDistAway */])(this.endPos, this.unitVector, this.vel);
   }
 
   hitbox() {
@@ -418,6 +422,40 @@ class Bomb {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Bomb);
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+const checkBombLaserCollision = (laser, bomb) => {
+
+
+  const startInHitbox = checkPosInHitbox(laser.startPos, bomb.hitbox());
+  const endInHitbox = checkPosInHitbox(laser.endPos, bomb.hitbox());
+
+  return (startInHitbox || endInHitbox);
+
+};
+/* harmony export (immutable) */ __webpack_exports__["checkBombLaserCollision"] = checkBombLaserCollision;
+
+
+const checkPosInHitbox = (pos, hitbox) => {
+  const topLeft = hitbox[0];
+  const bottomRight = hitbox[1];
+  const x = pos[0];
+  const y = pos[1];
+  let inBox = false;
+
+  if (x >= topLeft[0] && x <= bottomRight[1]
+    && y >= topLeft[1] && y <= bottomRight[1]) {
+      inBox = true;
+  }
+
+  return inBox;
+};
 
 
 /***/ })
