@@ -120,9 +120,13 @@ const RandomEndPos = (boardWidth, boardHeight) => (
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__laser__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bomb__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__util__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__collisions__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__explosion__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__explosion__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__city__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__util__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__collisions__ = __webpack_require__(9);
+
+
+
 
 
 
@@ -147,6 +151,7 @@ class Board {
     this.bombs = [];
     this.lasers = [];
     this.explosions = [];
+    this.cities = [];
     this.render = this.render.bind(this);
     this.generateBombs();
     this.checkCollisions();
@@ -154,6 +159,19 @@ class Board {
     this.explode.volume = 0.2;
     this.paused = true;
     this.renderCannon();
+    this.populateCities();
+  }
+
+  populateCities() {
+   const citiesPerSide = Math.floor(((this.width / 2) - 20) / __WEBPACK_IMPORTED_MODULE_5__city__["a" /* CITY_WIDTH */]);
+
+   for (let i = 0; i < citiesPerSide; i++) {
+     this.cities.push(new __WEBPACK_IMPORTED_MODULE_5__city__["b" /* default */]([5+i*__WEBPACK_IMPORTED_MODULE_5__city__["a" /* CITY_WIDTH */],424]));
+   }
+
+   for (let i = 1; i < citiesPerSide+1; i++) {
+     this.cities.push(new __WEBPACK_IMPORTED_MODULE_5__city__["b" /* default */]([this.width-5-i*__WEBPACK_IMPORTED_MODULE_5__city__["a" /* CITY_WIDTH */],424]));
+   }
   }
 
   generateBombs() {
@@ -161,20 +179,14 @@ class Board {
 
     window.setInterval(() => {
       if (!this.paused) {
-        const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_4__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_4__util__["a" /* RandomEndPos */])(this.width,this.height));
+        const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_6__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_6__util__["a" /* RandomEndPos */])(this.width,this.height));
         this.bombs.push(newBomb);
       }
     }, BOMB_INTERVAL);
 
   }
 
-  checkCollisions() {
-    window.setInterval(() => {
-      if (!this.paused) {
-        this.checkLaserBombCollisions();
-      }
-    }, COLLISION_INTERVAL);
-  }
+
 
 
   addLaser() {
@@ -190,6 +202,7 @@ class Board {
       this.renderCollection(this.lasers);
       this.renderCollection(this.bombs);
       this.renderCollection(this.explosions);
+      this.renderCollection(this.cities);
     }
 
     window.requestAnimationFrame(() =>
@@ -198,9 +211,18 @@ class Board {
 
   renderCannon() {
     const cannonStart = this.mainCannon.startPos;
-    const crossHairVector = Object(__WEBPACK_IMPORTED_MODULE_4__util__["d" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
+    const crossHairVector = Object(__WEBPACK_IMPORTED_MODULE_6__util__["d" /* calcUnitVector */])(cannonStart, this.crossHair.pos);
     this.mainCannon.calcEndPoint(crossHairVector);
     this.mainCannon.render(this.ctx);
+  }
+
+  checkCollisions() {
+    window.setInterval(() => {
+      if (!this.paused) {
+        this.checkLaserBombCollisions();
+        this.checkCityBombCollision();
+      }
+    }, COLLISION_INTERVAL);
   }
 
   checkLaserBombCollisions() {
@@ -209,15 +231,29 @@ class Board {
 
     lasers.forEach((laser) => {
       bombs.forEach((bomb) => {
-        if(Object(__WEBPACK_IMPORTED_MODULE_5__collisions__["a" /* checkBombLaserCollision */])(laser, bomb)) {
+        if(Object(__WEBPACK_IMPORTED_MODULE_7__collisions__["a" /* checkBombLaserCollision */])(laser, bomb)) {
           this.processLaserBombCollision(laser, bomb);
         }
       });
     });
   }
 
+  checkCityBombCollision() {
+    const cities = this.cities;
+    const bombs = this.bombs;
+
+    cities.forEach((city) => {
+      bombs.forEach((bomb) => {
+        if(Object(__WEBPACK_IMPORTED_MODULE_7__collisions__["b" /* checkCityBombCollision */])(city, bomb)) {
+          console.log("city");
+          this.processCityBombCollision(city, bomb);
+        }
+      });
+    });
+  }
+
   processLaserBombCollision(laser,bomb) {
-    const newExplosion = new __WEBPACK_IMPORTED_MODULE_6__explosion__["a" /* default */](bomb.startPos);
+    const newExplosion = new __WEBPACK_IMPORTED_MODULE_4__explosion__["a" /* default */](bomb.startPos);
     this.explosions.push(newExplosion);
     window.setTimeout(()=> {
       const explosionIdx = this.explosions.indexOf(newExplosion);
@@ -229,8 +265,13 @@ class Board {
     delete this.lasers[laserIdx];
     delete this.bombs[bombIdx];
     this.explode.play();
+  }
 
-
+  processCityBombCollision(city, bomb) {
+    const cityIdx = this.cities.indexOf(city);
+    const bombIdx = this.bombs.indexOf(bomb);
+    delete this.cities[cityIdx];
+    delete this.bombs[bombIdx];
   }
 
 
@@ -260,7 +301,7 @@ Board.BACKGROUND_COLOR = "#FFFFFF";
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(10);
 
 
 
@@ -464,39 +505,6 @@ class Bomb {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const checkBombLaserCollision = (laser, bomb) => {
-
-
-  const startInHitbox = checkPosInHitbox(laser.startPos, bomb.hitbox());
-  const endInHitbox = checkPosInHitbox(laser.endPos, bomb.hitbox());
-
-  return (startInHitbox || endInHitbox);
-
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = checkBombLaserCollision;
-
-
-const checkPosInHitbox = (pos, hitbox) => {
-  const topLeft = hitbox[0];
-  const bottomRight = hitbox[1];
-  const x = pos[0];
-  const y = pos[1];
-  let inBox = false;
-
-  if (x >= topLeft[0] && x <= bottomRight[0]
-    && y >= topLeft[1] && y <= bottomRight[1]) {
-      inBox = true;
-  }
-
-  return inBox;
-};
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 const EXPLOSION_WIDTH = 50;
 const EXPLOSION_HEIGHT = 50;
 
@@ -537,7 +545,92 @@ class Explosion {
 
 
 /***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const CITY_HEIGHT = 80;
+const CITY_WIDTH = 80;
+/* harmony export (immutable) */ __webpack_exports__["a"] = CITY_WIDTH;
+
+
+class City {
+  constructor(startPos) {
+    this.width = CITY_WIDTH;
+    this.height = CITY_HEIGHT;
+    this.img = new Image();
+    this.img.src = "./assets/city.png";
+    this.startPos = startPos;
+  }
+
+  render(ctx) {
+
+    ctx.drawImage(this.img, this.startPos[0], this.startPos[1]);
+  }
+
+  hitbox() {
+    return [this.startPos,
+       [this.startPos[0] + this.width, this.startPos[1] + this.height ]];
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["b"] = (City);
+
+
+/***/ }),
 /* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const checkBombLaserCollision = (laser, bomb) => {
+
+
+  const startInHitbox = checkPosInHitbox(laser.startPos, bomb.hitbox());
+  const endInHitbox = checkPosInHitbox(laser.endPos, bomb.hitbox());
+
+  return (startInHitbox || endInHitbox);
+
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = checkBombLaserCollision;
+
+
+const checkCityBombCollision = (city, bomb) => {
+  const bombHitbox = bomb.hitbox();
+  const bombTopLeft = bombHitbox[0];
+  const bombBottomRight = bombHitbox[1];
+  const bombTopRight = [bombBottomRight[0], bombTopLeft[1]];
+  const bombBottomLeft = [bombTopLeft[0],bombBottomRight[1]];
+
+  const topLeftInHitbox = checkPosInHitbox(bombTopLeft, city.hitbox());
+  const bottomRightInHitBox = checkPosInHitbox(bombBottomRight, city.hitbox());
+  const topRightInHitbox = checkPosInHitbox(bombTopRight, city.hitbox());
+  const bottomLeftInHitbox = checkPosInHitbox(bombBottomLeft, city.hitbox());
+
+  return (topLeftInHitbox || bottomRightInHitBox || topRightInHitbox || bottomLeftInHitbox);
+
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = checkCityBombCollision;
+
+
+const checkPosInHitbox = (pos, hitbox) => {
+  const topLeft = hitbox[0];
+  const bottomRight = hitbox[1];
+  const x = pos[0];
+  const y = pos[1];
+  let inBox = false;
+
+  if (x >= topLeft[0] && x <= bottomRight[0]
+    && y >= topLeft[1] && y <= bottomRight[1]) {
+      inBox = true;
+  }
+
+  return inBox;
+};
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
