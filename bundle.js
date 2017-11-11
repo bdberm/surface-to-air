@@ -544,7 +544,7 @@ class Explosion {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
 
 
-
+const CANNON_DELAY = 300;
 
 class Game {
   constructor(board, canvas) {
@@ -557,7 +557,7 @@ class Game {
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
     this.display = this.display.bind(this);
-
+    this.canShoot = true;
     this.setUp();
   }
 
@@ -575,8 +575,7 @@ class Game {
     });
 
     this.canvas.addEventListener("click", (e) => {
-      this.board.addLaser();
-      this.laserShot.play();
+      this.handleLaserShot();
     });
 
     window.addEventListener("keypress", (e) => {
@@ -585,17 +584,15 @@ class Game {
           this.handlePlayPause();
           break;
         case " ":
-          this.board.addLaser();
-          this.laserShot.play();
+          this.handleLaserShot();
           break;
-
-
       }
     });
 
     this.playPause.addEventListener("click", (e) => {
       this.handlePlayPause();
     });
+
 
   }
 
@@ -605,6 +602,15 @@ class Game {
       this.backgroundMusic.pause();
     } else {
       this.backgroundMusic.play();
+    }
+  }
+
+  handleLaserShot() {
+    if (this.canShoot) {
+      this.board.addLaser();
+      this.laserShot.play();
+      this.canShoot = false;
+      window.setTimeout(() => {this.canShoot = true;}, CANNON_DELAY);
     }
   }
 
