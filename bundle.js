@@ -361,10 +361,6 @@ document.addEventListener("DOMContentLoaded",() => {
   canvas.height = gameHeight;
   const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](canvas);
   const game = new __WEBPACK_IMPORTED_MODULE_1__game__["a" /* default */](gameBoard, canvas);
-  const laserShot = new Audio("./assets/laser.wav");
-
-
-
 });
 
 
