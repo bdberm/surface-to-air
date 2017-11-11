@@ -157,6 +157,10 @@ class Board {
     this.checkCollisions();
     this.explode = new Audio('./assets/explosion.wav');
     this.explode.volume = 0.2;
+    this.bigExplode = new Audio('./assets/explosion.wav');
+    this.bigExplode.volume = 0.6;
+    this.scream = new Audio("./assets/scream.mp3");
+    this.scream.volume = 0.6;
     this.paused = true;
     this.renderCannon();
     this.populateCities();
@@ -253,7 +257,7 @@ class Board {
   }
 
   processLaserBombCollision(laser,bomb) {
-    const newExplosion = new __WEBPACK_IMPORTED_MODULE_4__explosion__["a" /* default */](bomb.startPos);
+    const newExplosion = new __WEBPACK_IMPORTED_MODULE_4__explosion__["a" /* default */](bomb.startPos, bomb.width);
     this.explosions.push(newExplosion);
     window.setTimeout(()=> {
       const explosionIdx = this.explosions.indexOf(newExplosion);
@@ -268,13 +272,29 @@ class Board {
   }
 
   processCityBombCollision(city, bomb) {
+    const cityExplosion = new __WEBPACK_IMPORTED_MODULE_4__explosion__["a" /* default */](city.startPos, city.width);
+    this.explosions.push(cityExplosion);
+    window.setTimeout(()=> {
+      const explosionIdx = this.explosions.indexOf(cityExplosion);
+      delete this.explosions[explosionIdx];
+    }, 700);
+
+    const bombExplosion = new __WEBPACK_IMPORTED_MODULE_4__explosion__["a" /* default */](bomb.startPos, bomb.width);
+    this.explosions.push(bombExplosion);
+    window.setTimeout(()=> {
+      const explosionIdx = this.explosions.indexOf(bombExplosion);
+      delete this.explosions[explosionIdx];
+    }, 700);
+
     const cityIdx = this.cities.indexOf(city);
     const bombIdx = this.bombs.indexOf(bomb);
     delete this.cities[cityIdx];
     delete this.bombs[bombIdx];
+    this.bigExplode.play();
+    this.scream.play();
   }
 
-
+  
 
   renderCollection(array) {
     array.forEach((item) => {
@@ -505,14 +525,14 @@ class Bomb {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const EXPLOSION_WIDTH = 50;
-const EXPLOSION_HEIGHT = 50;
+// const EXPLOSION_WIDTH = 50;
+// const EXPLOSION_HEIGHT = 50;
 
 class Explosion {
-  constructor(pos) {
+  constructor(pos, width) {
     this.pos = pos;
-    this.width = EXPLOSION_WIDTH;
-    this.height = EXPLOSION_HEIGHT;
+    this.width = width;
+    this.height = width;
     this.img = new Image();
     this.img.src = "./assets/explosion_sprite.png";
     this.frame = 0;
