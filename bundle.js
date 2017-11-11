@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,50 +116,6 @@ const RandomEndPos = (boardWidth, boardHeight) => (
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(2);
-
-
-
-const gameWidth = 800;
-const gameHeight = 500;
-const windowWidth = Math.max(window.windowWidth, gameWidth);
-const windowHeight = Math.max(window.windowHeight, gameHeight);
-
-
-document.addEventListener("DOMContentLoaded",() => {
-  const canvas = document.getElementById('canvas');
-  canvas.width = gameWidth;
-  canvas.height = gameHeight;
-  const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](canvas);
-  const laserShot = new Audio("./assets/laser.wav");
-  laserShot.volume = 0.2;
-  const backgroundMusic = new Audio("./assets/background.mp3");
-  backgroundMusic.play();
-
-
-  gameBoard.render();
-
-  canvas.addEventListener("mousemove", (e) => {
-
-    const coords = [e.offsetX, e.offsetY];
-    gameBoard.crossHair.pos = coords;
-
-  });
-
-  canvas.addEventListener("click", (e) => {
-    gameBoard.addLaser();
-    laserShot.play();
-  });
-
-});
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__laser__ = __webpack_require__(5);
@@ -195,22 +151,28 @@ class Board {
     this.generateBombs();
     this.checkCollisions();
     this.explode = new Audio('./assets/explosion.wav');
-    this.explode.volume = 0.4;
+    this.explode.volume = 0.2;
+    this.paused = true;
+    this.renderCannon();
   }
 
   generateBombs() {
 
 
     window.setInterval(() => {
-      const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_4__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_4__util__["a" /* RandomEndPos */])(this.width,this.height));
-      this.bombs.push(newBomb);
-    },BOMB_INTERVAL);
+      if (!this.paused) {
+        const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_4__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_4__util__["a" /* RandomEndPos */])(this.width,this.height));
+        this.bombs.push(newBomb);
+      }
+    }, BOMB_INTERVAL);
 
   }
 
   checkCollisions() {
     window.setInterval(() => {
-      this.checkLaserBombCollisions();
+      if (!this.paused) {
+        this.checkLaserBombCollisions();
+      }
     }, COLLISION_INTERVAL);
   }
 
@@ -221,15 +183,14 @@ class Board {
   }
 
   render() {
-
-    this.ctx.clearRect(0,0, this.width, this.height);
-    this.crossHair.render(this.ctx);
-    this.renderCannon();
-    this.renderCollection(this.lasers);
-    this.renderCollection(this.bombs);
-    this.renderCollection(this.explosions);
-
-
+    if (!this.paused) {
+      this.ctx.clearRect(0,0, this.width, this.height);
+      this.crossHair.render(this.ctx);
+      this.renderCannon();
+      this.renderCollection(this.lasers);
+      this.renderCollection(this.bombs);
+      this.renderCollection(this.explosions);
+    }
 
     window.requestAnimationFrame(() =>
     this.render(this.width, this.height));
@@ -290,6 +251,36 @@ Board.BACKGROUND_COLOR = "#FFFFFF";
 
 
 /* harmony default export */ __webpack_exports__["a"] = (Board);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(9);
+
+
+
+const gameWidth = 800;
+const gameHeight = 500;
+const windowWidth = Math.max(window.windowWidth, gameWidth);
+const windowHeight = Math.max(window.windowHeight, gameHeight);
+
+
+document.addEventListener("DOMContentLoaded",() => {
+  const canvas = document.getElementById('canvas');
+  canvas.width = gameWidth;
+  canvas.height = gameHeight;
+  const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](canvas);
+  const game = new __WEBPACK_IMPORTED_MODULE_1__game__["a" /* default */](gameBoard, canvas);
+  const laserShot = new Audio("./assets/laser.wav");
+
+
+
+});
 
 
 /***/ }),
@@ -543,6 +534,88 @@ class Explosion {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Explosion);
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
+
+
+
+
+class Game {
+  constructor(board, canvas) {
+    this.board = board;
+    this.canvas = canvas;
+    // this.paused = true;
+    this.playPause = document.getElementById('play-pause');
+
+    this.laserShot = new Audio("./assets/laser.wav");
+    this.laserShot.volume = 0.2;
+    this.backgroundMusic = new Audio("./assets/background.mp3");
+    this.display = this.display.bind(this);
+
+    this.setUp();
+  }
+
+  setUp() {
+    this.display();
+    this.board.render();
+    this.playPause.textContent = "Play";
+
+
+    this.canvas.addEventListener("mousemove", (e) => {
+
+      const coords = [e.offsetX, e.offsetY];
+      this.board.crossHair.pos = coords;
+
+    });
+
+    this.canvas.addEventListener("click", (e) => {
+      this.board.addLaser();
+      this.laserShot.play();
+    });
+
+    window.addEventListener("keypress", (e) => {
+      switch (e.key) {
+        case "p":
+          this.handlePlayPause();
+          break;
+        case " ":
+          this.board.addLaser();
+          this.laserShot.play();
+          break;
+
+
+      }
+    });
+
+    this.playPause.addEventListener("click", (e) => {
+      this.handlePlayPause();
+    });
+
+  }
+
+  handlePlayPause() {
+    this.board.paused = this.board.paused ? false : true;
+    if (this.board.paused) {
+      this.backgroundMusic.pause();
+    } else {
+      this.backgroundMusic.play();
+    }
+  }
+
+  display() {
+    this.playPause.textContent = this.board.paused ? "Play" : "Pause";
+    window.requestAnimationFrame(this.display);
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Game);
 
 
 /***/ })
