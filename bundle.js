@@ -118,7 +118,6 @@ const RandomEndPos = (boardWidth, boardHeight) => (
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__collisions__ = __webpack_require__(7);
 
 
 
@@ -129,12 +128,14 @@ const windowHeight = Math.max(window.windowHeight, gameHeight);
 
 
 document.addEventListener("DOMContentLoaded",() => {
-  window.Collisions = __WEBPACK_IMPORTED_MODULE_1__collisions__;
   const canvas = document.getElementById('canvas');
   canvas.width = gameWidth;
   canvas.height = gameHeight;
   const gameBoard = new __WEBPACK_IMPORTED_MODULE_0__board__["a" /* default */](canvas);
   const laserShot = new Audio("./assets/laser.wav");
+  laserShot.volume = 0.2;
+  const backgroundMusic = new Audio("./assets/background.mp3");
+  backgroundMusic.play();
 
 
   gameBoard.render();
@@ -194,6 +195,7 @@ class Board {
     this.generateBombs();
     this.checkCollisions();
     this.explode = new Audio('./assets/explosion.wav');
+    this.explode.volume = 0.4;
   }
 
   generateBombs() {
@@ -246,7 +248,7 @@ class Board {
 
     lasers.forEach((laser) => {
       bombs.forEach((bomb) => {
-        if(Object(__WEBPACK_IMPORTED_MODULE_5__collisions__["checkBombLaserCollision"])(laser, bomb)) {
+        if(Object(__WEBPACK_IMPORTED_MODULE_5__collisions__["a" /* checkBombLaserCollision */])(laser, bomb)) {
           this.processLaserBombCollision(laser, bomb);
         }
       });
@@ -471,7 +473,6 @@ class Bomb {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 const checkBombLaserCollision = (laser, bomb) => {
 
 
@@ -481,7 +482,7 @@ const checkBombLaserCollision = (laser, bomb) => {
   return (startInHitbox || endInHitbox);
 
 };
-/* harmony export (immutable) */ __webpack_exports__["checkBombLaserCollision"] = checkBombLaserCollision;
+/* harmony export (immutable) */ __webpack_exports__["a"] = checkBombLaserCollision;
 
 
 const checkPosInHitbox = (pos, hitbox) => {
