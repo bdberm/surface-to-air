@@ -224,7 +224,8 @@ class Board {
     window.setInterval(() => {
       if (!this.paused) {
         this.checkLaserBombCollisions();
-        this.checkCityBombCollision();
+        this.checkCityBombCollisions();
+        this.checkGroundBombCollisions();
       }
     }, COLLISION_INTERVAL);
   }
@@ -242,7 +243,7 @@ class Board {
     });
   }
 
-  checkCityBombCollision() {
+  checkCityBombCollisions() {
     const cities = this.cities;
     const bombs = this.bombs;
 
@@ -254,6 +255,29 @@ class Board {
         }
       });
     });
+  }
+
+  checkGroundBombCollisions() {
+    const bombs = this.bombs;
+
+    bombs.forEach((bomb) => {
+      if (bomb.startPos[1] + bomb.height > this.height) {
+        this.processGroundBombCollision(bomb);
+      }
+    });
+  }
+
+  processGroundBombCollision(bomb) {
+    const newExplosion = new __WEBPACK_IMPORTED_MODULE_4__explosion__["a" /* default */](bomb.startPos, bomb.width);
+    this.explosions.push(newExplosion);
+    window.setTimeout(()=> {
+      const explosionIdx = this.explosions.indexOf(newExplosion);
+      delete this.explosions[explosionIdx];
+    }, 700);
+
+    const bombIdx = this.bombs.indexOf(bomb);
+    delete this.bombs[bombIdx];
+    this.explode.play();
   }
 
   processLaserBombCollision(laser,bomb) {
@@ -294,7 +318,7 @@ class Board {
     this.scream.play();
   }
 
-  
+
 
   renderCollection(array) {
     array.forEach((item) => {
