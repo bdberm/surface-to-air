@@ -166,8 +166,8 @@ class Board {
     this.populateCities();
   }
 
-  reset() {
-    
+  resetBoard() {
+
     this.lasers = [];
     this.bombs = [];
     this.lasers = [];
@@ -700,6 +700,7 @@ class Game {
     this.playPause = document.getElementById('play-pause');
     this.timeDisplay = document.getElementById('timer');
     this.citiesRemaining = document.getElementById('cities-remaining');
+    this.reset = document.getElementById('reset');
     this.laserShot = new Audio("./assets/laser.wav");
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
@@ -707,6 +708,11 @@ class Game {
     this.canShoot = true;
     this.timer = new __WEBPACK_IMPORTED_MODULE_1__timer__["a" /* default */](ROUND_TIME);
     this.setUp();
+  }
+
+  resetGame() {
+    this.timer.seconds = ROUND_TIME;
+    this.board.resetBoard();
   }
 
   setUp() {
@@ -729,6 +735,8 @@ class Game {
         case "p":
           this.handlePlayPause();
           break;
+        case "r":
+          this.resetGame();
         case " ":
           this.handleLaserShot();
           break;
@@ -744,6 +752,10 @@ class Game {
         this.timer.seconds -= 1;
       }
     }, 1000);
+
+    this.reset.addEventListener("click", (e) => {
+      this.resetGame();
+    });
 
   }
 

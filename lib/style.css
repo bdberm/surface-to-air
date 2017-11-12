@@ -18,8 +18,8 @@ canvas {
 #display {
   display: flex;
   flex-direction: row-reverse;
-  justify-content: flex-start;
-  width: 800px;
+  justify-content: space-between;
+  width: 1000px;
   margin: 0 auto;
   margin-top: 20px;
   height: 50px;
@@ -37,7 +37,7 @@ h1 {
 
 }
 
-#play-pause {
+button {
   box-sizing: border-box;
   width: 120px;
   height: 40px;
@@ -47,6 +47,10 @@ h1 {
   border: 1px solid gray;
   font-family: 'Orbitron', sans-serif;
   padding-top: 8px;
+}
+
+#play-pause {
+
 }
 
 footer {
