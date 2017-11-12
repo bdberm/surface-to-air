@@ -178,12 +178,16 @@ footer > span {
 }
 #controls > h2 {
   margin: 0;
+
 }
 
 
 #headphones-reco {
   font-size: 12px;
   margin: 0;
+  margin-bottom: 10px;
+  color: #ff0101;
+  font-weight: bold;
 }
 #controls > ul {
   list-style: none;
