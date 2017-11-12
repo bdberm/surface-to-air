@@ -105,7 +105,7 @@ const RandomStartPos = (boardWidth) => (
 
 
 const RandomEndPos = (boardWidth, boardHeight) => (
-  [Math.random() * (boardWidth + 100) - 50 ,boardHeight]
+  [Math.random() * (boardWidth + 200) - 100 ,boardHeight]
 );
 /* harmony export (immutable) */ __webpack_exports__["a"] = RandomEndPos;
 
@@ -719,6 +719,7 @@ class Game {
 
   resetGame() {
     this.timer.seconds = ROUND_TIME;
+    this.backgroundMusic.pause();
     this.board.resetBoard();
   }
 
@@ -773,7 +774,9 @@ class Game {
     this.board.paused = this.board.paused ? false : true;
     if (this.board.paused) {
       this.backgroundMusic.pause();
-      this.pauseModal.className = "pop-up visible";
+      if(!this.board.gameOver()) {
+        this.pauseModal.className = "pop-up visible";
+      }
     } else {
       this.backgroundMusic.play();
       this.startModal.className = "pop-up";
