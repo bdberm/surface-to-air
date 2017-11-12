@@ -705,6 +705,9 @@ class Game {
     this.timeDisplay = document.getElementById('timer');
     this.citiesRemaining = document.getElementById('cities-remaining');
     this.reset = document.getElementById('reset');
+    this.gameOverModal = document.getElementById('game-over');
+    this.pauseModal = document.getElementById('pause');
+    this.startModal = document.getElementById("start");
     this.laserShot = new Audio("./assets/laser.wav");
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
@@ -741,6 +744,9 @@ class Game {
           break;
         case "r":
           this.resetGame();
+        case "x":
+          this.gameOverModal.className = "pop-up";
+          this.handlePlayPause();
         case " ":
           this.handleLaserShot();
           break;
@@ -767,8 +773,11 @@ class Game {
     this.board.paused = this.board.paused ? false : true;
     if (this.board.paused) {
       this.backgroundMusic.pause();
+      this.pauseModal.className = "pop-up visible";
     } else {
       this.backgroundMusic.play();
+      this.startModal.className = "pop-up";
+      this.pauseModal.className = "pop-up";
     }
   }
 
@@ -782,7 +791,12 @@ class Game {
   }
 
   display() {
-    if (this.board.gameOver() || this.timer.seconds===0) {
+    if (this.board.gameOver()) {
+      this.gameOverModal.className = "pop-up visible";
+      this.resetGame();
+    }
+
+    if (this.timer.seconds === 0) {
       this.resetGame();
     }
     this.playPause.textContent = this.board.paused ? "Play" : "Pause";

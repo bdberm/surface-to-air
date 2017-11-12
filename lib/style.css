@@ -8,11 +8,64 @@ body {
 canvas {
   border: 2px solid blue;
   display: block;
-  margin: 0 auto;
-  /*margin-top:  20px;*/
   cursor: none;
   background-image: url("../assets/mountains.jpg");
   background-size:cover;
+  position: absolute;
+}
+
+#canvas-wrapper {
+  position: relative;
+  margin: 0 auto;
+  width: 800px;
+  height: 500px;
+}
+
+.pop-up {
+  width: 802px;
+  height: 502px;
+  position: absolute;
+  background: black;
+  z-index: 2;
+  display: none;
+  overflow: hidden;
+}
+
+.pop-up > iframe {
+  width: 50%;
+  height: inherit;
+  display: block;
+}
+
+#general {
+  background-image: url("../assets/general.jpg");
+  width: 50%;
+  background-repeat: no-repeat;
+  margin-top: 12px;
+}
+
+#start > h3 {
+  width: 50%;
+  margin-top: 25px;
+  font-size: 18px;
+}
+#start-head {
+  font-size: 30px;
+}
+
+
+.visible {
+  display: flex;
+  justify-content: space-between;
+}
+
+h3 {
+  line-height: 1.5;
+  font-size: 28px;
+  color: #ff0101;
+  text-align: center;
+  margin-right: 20px;
+  margin-top: 200px;
 }
 
 #display {

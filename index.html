@@ -17,7 +17,30 @@
       <h1>SURFACE TO AIR</h1>
       <div id="cities-remaining"></div>
     </section>
-    <canvas id="canvas"></canvas>
+    <div id="canvas-wrapper">
+      <div id="game-over" class="pop-up">
+        <iframe src="https://giphy.com/embed/3oKIPwoeGErMmaI43S"  frameBorder="0" class="giphy-embed" allowFullScreen></iframe><a href="https://giphy.com/gifs/culture--run-3oKIPwoeGErMmaI43S"></a>
+        <h3> GAME OVER!<br>EVERYONE IS DEAD<br> Press "x" to play again</h3>
+      </div>
+      <div id="pause" class="pop-up">
+        <iframe src="https://giphy.com/embed/zlrE2f46Zuwww"  frameBorder="0" class="giphy-embed" allowFullScreen></iframe><a href="https://giphy.com/gifs/news-day-things-zlrE2f46Zuwww"></a>
+        <h3> SURFACE TO AIR! <br> Press "p" to resume</h3>
+      </div>
+      <div id="start" class="pop-up visible">
+        <div id="general"> </div>
+        <h3> <span id="start-head">WE ARE UNDER ATTACK!</span> <br>
+          <br>
+          Officer, the enemy took us completely by suprise. We need to evacuate as many civilians as possible. Take down any of the bombs before they hit the ground.
+          <br><br>
+          Press "p" to get started and pause. Target with the mouse. Shoot with the mouse or spacebar.
+          <br><br>
+          Game over if all cities are destroyed. If you reach 0 on the countdown, you can move onto the next level.
+        </h3>
+
+      </div>
+
+      <canvas id="canvas"></canvas>
+    </div>
     <footer>Created By: &nbsp
       <span><a href="http://www.benjamin-berman.com/" target="_blank">Benjamin Berman</a></span> &nbsp
       <a href="https://github.com/bdberm" target="_blank">GITHUB</a> &nbsp
