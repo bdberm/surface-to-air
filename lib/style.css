@@ -68,3 +68,18 @@ footer > span {
   font-weight: 700;
   font-size: 22px;
 }
+
+#timer {
+  box-sizing: border-box;
+  width: 100px;
+  height: 40px;
+  background-color: #ff8c00;
+  color: #49fb35;
+  font-size: 25px;
+  font-weight: bold;
+  border: 1px solid gray;
+  font-family: 'Orbitron', sans-serif;
+  padding-top: 8px;
+  margin-right: 30px;
+  text-align: center;
+}

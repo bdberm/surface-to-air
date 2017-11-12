@@ -680,14 +680,14 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 
 const CANNON_DELAY = 300;
-const ROUND_TIME = 90;
+const ROUND_TIME = 60;
 
 class Game {
   constructor(board, canvas) {
     this.board = board;
     this.canvas = canvas;
-    this.paused = true;
     this.playPause = document.getElementById('play-pause');
+    this.timeDisplay = document.getElementById('timer');
     this.laserShot = new Audio("./assets/laser.wav");
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
@@ -728,7 +728,7 @@ class Game {
     });
 
     window.setInterval(() => {
-      if (!this.paused) {
+      if (!this.board.paused) {
         this.timer.seconds -= 1;
       }
     }, 1000);
@@ -755,6 +755,7 @@ class Game {
 
   display() {
     this.playPause.textContent = this.board.paused ? "Play" : "Pause";
+    this.timeDisplay.textContent = this.timer.display();
     window.requestAnimationFrame(this.display);
   }
 
