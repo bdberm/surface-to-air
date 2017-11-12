@@ -330,7 +330,7 @@ class Board {
     this.cities.splice(cityIdx,1);
     this.bombs.splice(bombIdx, 1);
     this.bigExplode.play();
-    // this.scream.play();
+    this.scream.play();
   }
 
 
