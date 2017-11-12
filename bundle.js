@@ -329,7 +329,7 @@ class Board {
     const bombIdx = this.bombs.indexOf(bomb);
     this.cities.splice(cityIdx,1);
     this.bombs.splice(bombIdx, 1);
-    this.bigExplode.play();
+    this.bigExploode.play();
     this.scream.play();
   }
 
@@ -764,14 +764,14 @@ class Game {
           this.resetGame();
           break;
         case "x":
-          if(this.board.gameOver()) {
-          this.gameOverModal.className = "pop-up";
-          this.handlePlayPause();
+
+          if (this.gameOverModal.className === "pop-up visible") {
+            this.gameOverModal.className = "pop-up";
+            this.handlePlayPause();
           }
-          if(this.levelModal.className === "pop-up visible") {
+          if (this.levelModal.className === "pop-up visible") {
             this.levelModal.className = "pop-up";
             this.handlePlayPause();
-
           }
           break;
         case " ":
