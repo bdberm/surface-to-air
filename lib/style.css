@@ -5,6 +5,11 @@ body {
 
 }
 
+h3 {
+  line-height: 1;
+  font-sise
+}
+
 canvas {
   border: 2px solid blue;
   display: block;
@@ -179,6 +184,7 @@ footer > span {
   font-size: 12px;
   margin: 0;
 }
+
 #controls > ul {
   list-style: none;
   font-size: 18px;
