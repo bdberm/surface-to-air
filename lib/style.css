@@ -179,9 +179,13 @@ footer > span {
   padding: 0;
   padding-left: 10px;
   color: black;
-  
+
 }
 
+#content .visible{
+  display: flex;
+  justify-content: flex-end;
+}
 
 
 #controls > ul > li {
