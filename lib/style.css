@@ -171,6 +171,14 @@ footer > span {
   font-size: 25px;
 
 }
+#controls > h2 {
+  margin: 0;
+}
+
+#controls > h3 {
+  font-size: 12px;
+  margin: 0;
+}
 #controls > ul {
   list-style: none;
   font-size: 18px;
