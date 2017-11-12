@@ -732,7 +732,7 @@ class Game {
     if (this.board.bombInterval > 200) {
       this.board.bombInterval -= 50;
     }
-    
+
     this.timer.seconds = ROUND_TIME;
     this.board.resetBoard();
     this.backgroundMusic.pause();
