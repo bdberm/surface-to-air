@@ -135,7 +135,7 @@ const RandomEndPos = (boardWidth, boardHeight) => (
 
 
 
-const BOMB_INTERVAL = 1000;
+const BOMB_INTERVAL_START = 1000;
 const COLLISION_INTERVAL = 10;
 
 
@@ -153,6 +153,7 @@ class Board {
     this.explosions = [];
     this.cities = [];
     this.render = this.render.bind(this);
+    this.bombInterval = BOMB_INTERVAL_START;
     this.generateBombs();
     this.checkCollisions();
     this.explode = new Audio('./assets/explosion.wav');
@@ -201,7 +202,7 @@ class Board {
         const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_6__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_6__util__["a" /* RandomEndPos */])(this.width,this.height));
         this.bombs.push(newBomb);
       }
-    }, BOMB_INTERVAL);
+    }, this.bombInterval);
 
   }
 
@@ -265,7 +266,6 @@ class Board {
     cities.forEach((city) => {
       bombs.forEach((bomb) => {
         if(Object(__WEBPACK_IMPORTED_MODULE_7__collisions__["b" /* checkCityBombCollision */])(city, bomb)) {
-          console.log("city");
           this.processCityBombCollision(city, bomb);
         }
       });
@@ -708,19 +708,36 @@ class Game {
     this.gameOverModal = document.getElementById('game-over');
     this.pauseModal = document.getElementById('pause');
     this.startModal = document.getElementById("start");
+    this.levelModal = document.getElementById('level-up');
     this.laserShot = new Audio("./assets/laser.wav");
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
+    this.backgroundMusic.loop = true;
     this.display = this.display.bind(this);
     this.canShoot = true;
     this.timer = new __WEBPACK_IMPORTED_MODULE_1__timer__["a" /* default */](ROUND_TIME);
+    this.level = 1;
     this.setUp();
   }
 
   resetGame() {
     this.timer.seconds = ROUND_TIME;
     this.backgroundMusic.pause();
+    this.level = 1;
     this.board.resetBoard();
+  }
+
+  levelUp() {
+    this.level += 1;
+    if (this.board.bombInterval > 200) {
+      this.board.bombInterval -= 50;
+    }
+    console.log(this.board.bombInterval);
+    this.timer.seconds = ROUND_TIME;
+    this.board.resetBoard();
+    this.backgroundMusic.pause();
+    this.levelModal.className = "pop-up visible";
+
   }
 
   setUp() {
@@ -745,9 +762,18 @@ class Game {
           break;
         case "r":
           this.resetGame();
+          break;
         case "x":
+          if(this.board.gameOver()) {
           this.gameOverModal.className = "pop-up";
           this.handlePlayPause();
+          }
+          if(this.levelModal.className === "pop-up visible") {
+            this.levelModal.className = "pop-up";
+            this.handlePlayPause();
+
+          }
+          break;
         case " ":
           this.handleLaserShot();
           break;
@@ -793,6 +819,8 @@ class Game {
     }
   }
 
+
+
   display() {
     if (this.board.gameOver()) {
       this.gameOverModal.className = "pop-up visible";
@@ -800,11 +828,11 @@ class Game {
     }
 
     if (this.timer.seconds === 0) {
-      this.resetGame();
+      this.levelUp();
     }
     this.playPause.textContent = this.board.paused ? "Play" : "Pause";
     this.timeDisplay.textContent = this.timer.display();
-    this.citiesRemaining.textContent = `${this.board.cities.length} cities remain`;
+    this.citiesRemaining.textContent = `Level ${this.level}: ${this.board.cities.length} cities remain`;
     window.requestAnimationFrame(this.display);
   }
 
