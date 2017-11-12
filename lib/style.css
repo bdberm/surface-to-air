@@ -158,6 +158,7 @@ footer > span {
 
 
 #controls {
+  display: block;
   width: 200px;
   height: 250px;
   z-index:3;
