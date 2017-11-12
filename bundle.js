@@ -166,6 +166,17 @@ class Board {
     this.populateCities();
   }
 
+  reset() {
+    
+    this.lasers = [];
+    this.bombs = [];
+    this.lasers = [];
+    this.explosions = [];
+    this.cities = [];
+    this.paused = true;
+    this.populateCities();
+  }
+
   populateCities() {
    const citiesPerSide = Math.floor(((this.width / 2) - 20) / __WEBPACK_IMPORTED_MODULE_5__city__["a" /* CITY_WIDTH */]);
 
@@ -276,7 +287,7 @@ class Board {
     }, 700);
 
     const bombIdx = this.bombs.indexOf(bomb);
-    delete this.bombs[bombIdx];
+    this.bombs.splice(bombIdx,1);
     this.explode.play();
   }
 
@@ -290,8 +301,8 @@ class Board {
 
     const laserIdx = this.lasers.indexOf(laser);
     const bombIdx = this.bombs.indexOf(bomb);
-    delete this.lasers[laserIdx];
-    delete this.bombs[bombIdx];
+    this.lasers.splice(laserIdx,1);
+    this.bombs.splice(bombIdx,1);
     this.explode.play();
   }
 
@@ -312,8 +323,8 @@ class Board {
 
     const cityIdx = this.cities.indexOf(city);
     const bombIdx = this.bombs.indexOf(bomb);
-    delete this.cities[cityIdx];
-    delete this.bombs[bombIdx];
+    this.cities.splice(cityIdx,1);
+    this.bombs.splice(bombIdx, 1);
     this.bigExplode.play();
     this.scream.play();
   }
@@ -688,6 +699,7 @@ class Game {
     this.canvas = canvas;
     this.playPause = document.getElementById('play-pause');
     this.timeDisplay = document.getElementById('timer');
+    this.citiesRemaining = document.getElementById('cities-remaining');
     this.laserShot = new Audio("./assets/laser.wav");
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
@@ -756,6 +768,8 @@ class Game {
   display() {
     this.playPause.textContent = this.board.paused ? "Play" : "Pause";
     this.timeDisplay.textContent = this.timer.display();
+    console.log(this.board.cities);
+    this.citiesRemaining.textContent = `${this.board.cities.length} cities remain`;
     window.requestAnimationFrame(this.display);
   }
 

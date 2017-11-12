@@ -27,7 +27,7 @@ canvas {
 }
 
 h1 {
-  font-size: 38px;
+  font-size: 32px;
   font-weight: bolder;
   padding-right: 30px;
   margin-bottom: 15px;
@@ -39,7 +39,7 @@ h1 {
 
 #play-pause {
   box-sizing: border-box;
-  width: 150px;
+  width: 120px;
   height: 40px;
   background-color: #49fb35;
   color: #ff8c00;
@@ -82,4 +82,18 @@ footer > span {
   padding-top: 8px;
   margin-right: 30px;
   text-align: center;
+}
+
+#cities-remaining {
+  box-sizing: border-box;
+  width: 175px;
+  height: 40px;
+  background-color: #49fb35;
+  color: #ff8c00;
+  margin-right: 30px;
+  font-size: 20px;
+  border: 1px solid gray;
+  font-family: 'Orbitron', sans-serif;
+  padding-top: 8px;
+  padding-left: 5px;
 }
