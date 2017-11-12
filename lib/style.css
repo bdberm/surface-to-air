@@ -158,7 +158,8 @@ footer > span {
 
 
 #controls {
-  display: block;
+  flex-direction: column;
+  justify-content: flex-end;
   width: 200px;
   height: 250px;
   z-index:3;
@@ -178,7 +179,10 @@ footer > span {
   padding: 0;
   padding-left: 10px;
   color: black;
+  
 }
+
+
 
 #controls > ul > li {
   margin-top: 20px;
