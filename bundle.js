@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,12 +116,12 @@ const RandomEndPos = (boardWidth, boardHeight) => (
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__laser__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bomb__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__explosion__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__city__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__crosshair__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cannon__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__laser__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__bomb__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__explosion__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__city__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__util__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__collisions__ = __webpack_require__(9);
 
@@ -343,6 +343,40 @@ Board.BACKGROUND_COLOR = "#FFFFFF";
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const CITY_HEIGHT = 80;
+const CITY_WIDTH = 80;
+/* harmony export (immutable) */ __webpack_exports__["a"] = CITY_WIDTH;
+
+
+class City {
+  constructor(startPos) {
+    this.width = CITY_WIDTH;
+    this.height = CITY_HEIGHT;
+    this.img = new Image();
+    this.img.src = "./assets/city.png";
+    this.startPos = startPos;
+  }
+
+  render(ctx) {
+
+    ctx.drawImage(this.img, this.startPos[0], this.startPos[1]);
+  }
+
+  hitbox() {
+    return [this.startPos,
+       [this.startPos[0] + this.width, this.startPos[1] + this.height ]];
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["b"] = (City);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(10);
@@ -365,7 +399,7 @@ document.addEventListener("DOMContentLoaded",() => {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -390,7 +424,7 @@ class CrossHair {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -438,7 +472,7 @@ class Cannon {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -485,7 +519,7 @@ class Laser {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -541,7 +575,7 @@ class Bomb {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -582,40 +616,6 @@ class Explosion {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Explosion);
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const CITY_HEIGHT = 80;
-const CITY_WIDTH = 80;
-/* harmony export (immutable) */ __webpack_exports__["a"] = CITY_WIDTH;
-
-
-class City {
-  constructor(startPos) {
-    this.width = CITY_WIDTH;
-    this.height = CITY_HEIGHT;
-    this.img = new Image();
-    this.img.src = "./assets/city.png";
-    this.startPos = startPos;
-  }
-
-  render(ctx) {
-
-    ctx.drawImage(this.img, this.startPos[0], this.startPos[1]);
-  }
-
-  hitbox() {
-    return [this.startPos,
-       [this.startPos[0] + this.width, this.startPos[1] + this.height ]];
-  }
-
-}
-
-/* harmony default export */ __webpack_exports__["b"] = (City);
 
 
 /***/ }),
@@ -675,22 +675,25 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__timer__ = __webpack_require__(11);
+
 
 
 const CANNON_DELAY = 300;
+const ROUND_TIME = 90;
 
 class Game {
   constructor(board, canvas) {
     this.board = board;
     this.canvas = canvas;
-    // this.paused = true;
+    this.paused = true;
     this.playPause = document.getElementById('play-pause');
-
     this.laserShot = new Audio("./assets/laser.wav");
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
     this.display = this.display.bind(this);
     this.canShoot = true;
+    this.timer = new __WEBPACK_IMPORTED_MODULE_1__timer__["a" /* default */](ROUND_TIME);
     this.setUp();
   }
 
@@ -698,8 +701,6 @@ class Game {
     this.display();
     this.board.render();
     this.playPause.textContent = "Play";
-
-
     this.canvas.addEventListener("mousemove", (e) => {
 
       const coords = [e.offsetX, e.offsetY];
@@ -726,6 +727,11 @@ class Game {
       this.handlePlayPause();
     });
 
+    window.setInterval(() => {
+      if (!this.paused) {
+        this.timer.seconds -= 1;
+      }
+    }, 1000);
 
   }
 
@@ -755,6 +761,34 @@ class Game {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Game);
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Timer {
+  constructor(seconds) {
+    this.seconds = seconds;
+  }
+
+  display() {
+    const minutes = Math.floor(this.seconds / 60);
+    const displaySeconds = this.seconds % 60;
+
+    const minuteStr = minutes.toString();
+    const secondStr = displaySeconds < 10 ? "0" + displaySeconds.toString()
+      : displaySeconds.toString();
+
+    return `${minuteStr}:${secondStr}`;
+    }
+
+
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Timer);
 
 
 /***/ })
