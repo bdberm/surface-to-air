@@ -163,8 +163,8 @@ class Board {
     this.scream = new Audio("./assets/scream.mp3");
     this.scream.volume = 0.6;
     this.paused = true;
-    this.renderCannon();
     this.populateCities();
+    this.renderCannon();
   }
 
   gameOver() {
