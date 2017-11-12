@@ -105,7 +105,7 @@ const RandomStartPos = (boardWidth) => (
 
 
 const RandomEndPos = (boardWidth, boardHeight) => (
-  [Math.random() * boardWidth ,boardHeight]
+  [Math.random() * (boardWidth + 100) - 50 ,boardHeight]
 );
 /* harmony export (immutable) */ __webpack_exports__["a"] = RandomEndPos;
 
@@ -164,6 +164,10 @@ class Board {
     this.paused = true;
     this.renderCannon();
     this.populateCities();
+  }
+
+  gameOver() {
+    return this.cities.length === 0;
   }
 
   resetBoard() {
@@ -769,7 +773,7 @@ class Game {
   }
 
   handleLaserShot() {
-    if (this.canShoot) {
+    if (this.canShoot && !this.board.paused) {
       this.board.addLaser();
       this.laserShot.play();
       this.canShoot = false;
@@ -778,9 +782,11 @@ class Game {
   }
 
   display() {
+    if (this.board.gameOver() || this.timer.seconds===0) {
+      this.resetGame();
+    }
     this.playPause.textContent = this.board.paused ? "Play" : "Pause";
     this.timeDisplay.textContent = this.timer.display();
-    console.log(this.board.cities);
     this.citiesRemaining.textContent = `${this.board.cities.length} cities remain`;
     window.requestAnimationFrame(this.display);
   }
