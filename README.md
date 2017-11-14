@@ -21,7 +21,7 @@ The game architecture includes:
 * collision.js - handles the detection of collisions in the game
 * util.js - helper functions for calculating unit vectors and positions for rendering the various game objects
 
-##Future Features
+## Future Features
 * More involved scoring process
 * Change game animations as you advance levels
 * Add Side Cannons
