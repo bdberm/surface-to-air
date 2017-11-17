@@ -780,7 +780,7 @@ class Game {
       }
     });
 
-    this.playPause.addEventListener("click", (e) => {
+    this.playPause.addEventListener("mousedown", (e) => {
       this.handlePlayPause();
     });
 
@@ -807,6 +807,7 @@ class Game {
       this.backgroundMusic.play();
       this.startModal.className = "pop-up";
       this.pauseModal.className = "pop-up";
+      this.canvas.focus();
     }
   }
 

@@ -16,6 +16,7 @@ canvas {
   background-image: url("../assets/mountains.jpg");
   background-size:cover;
   position: absolute;
+  
 }
 
 #canvas-wrapper {
