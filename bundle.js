@@ -428,13 +428,13 @@ class CrossHair {
     this.height = 20;
     this.img = new Image();
     this.img.src = "./assets/crosshair.png";
-    this.arrowsDown = [false, false, false, false];
   }
 
   render(ctx) {
     this.move();
     ctx.drawImage(this.img, this.pos[0] - (this.width/2) , this.pos[1] - (this.height/2), this.width, this.height);
   }
+
 
   move() {
     if (this.pos[0] < 0) {
@@ -456,7 +456,6 @@ class CrossHair {
     } else {
       this.pos[1] += this.vector[1];
     }
-
 
   }
 
@@ -723,7 +722,7 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 const CANNON_DELAY = 300;
 const ROUND_TIME = 60;
-const KEYBOARD_CROSSHAIR_VEL = 15;
+const KEYBOARD_CROSSHAIR_VEL = 12.5;
 
 class Game {
   constructor(board, canvas) {
@@ -746,6 +745,8 @@ class Game {
     this.timer = new __WEBPACK_IMPORTED_MODULE_1__timer__["a" /* default */](ROUND_TIME);
     this.level = 1;
     this.setUp();
+    this.arrowsDown = [false, false, false, false];
+    this.crossHairVec = [0,0];
   }
 
   resetGame() {
@@ -813,45 +814,49 @@ class Game {
 
       switch (e.key) {
         case "ArrowLeft":
-          this.board.crossHair.vector[0] -= KEYBOARD_CROSSHAIR_VEL;
+          this.handleArrowDown("left");
+          this.arrowsDown[0] = true;
           break;
         case "ArrowRight":
-          this.board.crossHair.vector[0] += KEYBOARD_CROSSHAIR_VEL;
+          this.handleArrowDown("right");
+          this.arrowsDown[1] = true;
           break;
         case "ArrowUp":
           e.preventDefault();
-          this.board.crossHair.vector[1] -= KEYBOARD_CROSSHAIR_VEL;
+          this.handleArrowDown("up");
+          this.arrowsDown[2] = true;
           break;
         case "ArrowDown":
           e.preventDefault();
-          this.board.crossHair.vector[1] += KEYBOARD_CROSSHAIR_VEL;
+          this.handleArrowDown("down");
+          this.arrowsDown[3] = true;
           break;
       }
     });
 
+    window.setInterval(() => {
+      this.adjustCrossHairVec();
+    }, 50);
+
     window.addEventListener("keyup", (e) => {
       switch (e.key) {
         case "ArrowLeft":
-          if(this.board.crossHair.vector[0] !== 0) {
-            this.board.crossHair.vector[0] += KEYBOARD_CROSSHAIR_VEL;
-          }
+          this.handleArrowUp("left");
+          this.arrowsDown[0] = false;
           break;
         case "ArrowRight":
-          if(this.board.crossHair.vector[0] !== 0) {
-            this.board.crossHair.vector[0] -= KEYBOARD_CROSSHAIR_VEL;
-          }
+          this.handleArrowUp("right");
+          this.arrowsDown[1] = false;
           break;
         case "ArrowUp":
           e.preventDefault();
-          if(this.board.crossHair.vector[1] !== 0) {
-            this.board.crossHair.vector[1] += KEYBOARD_CROSSHAIR_VEL;
-          }
+          this.handleArrowUp("up");
+          this.arrowsDown[2] = false;
           break;
         case "ArrowDown":
           e.preventDefault();
-          if(this.board.crossHair.vector[1] !== 0) {
-            this.board.crossHair.vector[1] -= KEYBOARD_CROSSHAIR_VEL;
-          }
+          this.handleArrowUp("down");
+          this.arrowsDown[3] = false;
           break;
       }
     });
@@ -871,6 +876,54 @@ class Game {
     });
 
   }
+
+  adjustCrossHairVec() {
+    const [left, right, up, down] = this.arrowsDown;
+    const xAdj = (up || down) ? 0.5 : 1;
+    const yAdj = (left || right) ? 0.5 : 1;
+    this.board.crossHair.vector =  [this.crossHairVec[0] * xAdj, this.crossHairVec[1] * yAdj];
+  }
+
+  handleArrowDown(dir) {
+
+    const [crossHairIdx, otherIdx, arrowDown, plusMinus] = this.arrowHelper(dir);
+
+    if (!arrowDown) {
+      this.crossHairVec[crossHairIdx] += KEYBOARD_CROSSHAIR_VEL * plusMinus;
+    }
+  }
+
+  handleArrowUp(dir) {
+    const [crossHairIdx, otherIdx, arrowDown, plusMinus] = this.arrowHelper(dir);
+    if (this.crossHairVec[crossHairIdx] !== 0) {
+      this.crossHairVec[crossHairIdx] += KEYBOARD_CROSSHAIR_VEL * plusMinus * -1;
+    }
+  }
+
+  arrowHelper(dir) {
+    let crossHairIdx;
+    let otherIdx;
+    let arrowDown;
+    let plusMinus;
+    switch (dir) {
+      case "left":
+        [crossHairIdx, otherIdx, arrowDown, plusMinus] = [0,1,this.arrowsDown[0],-1];
+        break;
+      case "right":
+        [crossHairIdx, otherIdx, arrowDown, plusMinus] = [0,1,this.arrowsDown[1],1];
+        break;
+      case "up":
+        [crossHairIdx, otherIdx, arrowDown, plusMinus] = [1,0,this.arrowsDown[2],-1];
+        break;
+      case "down":
+        [crossHairIdx, otherIdx, arrowDown, plusMinus] = [1,0,this.arrowsDown[3],1];
+        break;
+    }
+
+    return [crossHairIdx, otherIdx, arrowDown, plusMinus];
+  }
+
+
 
   handlePlayPause() {
     this.board.paused = this.board.paused ? false : true;
