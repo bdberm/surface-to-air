@@ -16,7 +16,7 @@ canvas {
   background-image: url("../assets/mountains.jpg");
   background-size:cover;
   position: absolute;
-  
+
 }
 
 #canvas-wrapper {
@@ -170,7 +170,7 @@ footer > span {
   flex-direction: column;
   justify-content: flex-end;
   width: 200px;
-  height: 250px;
+  height: 350px;;
   z-index:3;
   margin-left: -223px;
   border: 2px solid blue;
@@ -201,7 +201,6 @@ footer > span {
   padding: 0;
   padding-left: 10px;
   color: black;
-
 }
 
 #content .visible{
