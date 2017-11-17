@@ -145,7 +145,7 @@ class Board {
     this.ctx = canvas.getContext('2d');
     this.width = canvas.width;
     this.height = canvas.height;
-    this.crossHair = new __WEBPACK_IMPORTED_MODULE_0__crosshair__["a" /* default */]();
+    this.crossHair = new __WEBPACK_IMPORTED_MODULE_0__crosshair__["a" /* default */](this.width, this.height);
     this.mainCannon = new __WEBPACK_IMPORTED_MODULE_1__cannon__["a" /* default */]([canvas.width/2, canvas.height]);
     this.lasers = [];
     this.bombs = [];
@@ -419,18 +419,45 @@ document.addEventListener("DOMContentLoaded",() => {
 
 "use strict";
 class CrossHair {
-  constructor() {
-
-    this.pos =  [0,0];
+  constructor(gameWidth, gameHeight) {
+    this.gameWidth = gameWidth;
+    this.gameHeight = gameHeight;
+    this.pos =  [gameWidth/2,gameHeight/2];
+    this.vector = [0,0];
     this.width = 20;
     this.height = 20;
     this.img = new Image();
     this.img.src = "./assets/crosshair.png";
-
+    this.arrowsDown = [false, false, false, false];
   }
 
   render(ctx) {
+    this.move();
     ctx.drawImage(this.img, this.pos[0] - (this.width/2) , this.pos[1] - (this.height/2), this.width, this.height);
+  }
+
+  move() {
+    if (this.pos[0] < 0) {
+      this.pos[0] = 0;
+      this.vector[0] = 0;
+    } else if (this.pos[0] > this.gameWidth) {
+      this.pos[0] = this.gameWidth;
+      this.vector[0] = 0;
+    } else {
+      this.pos[0] += this.vector[0];
+    }
+
+    if (this.pos[1] < 0) {
+      this.pos[1] = 0;
+      this.vector[1] = 0;
+    } else if (this.pos[1] > this.gameHeight) {
+      this.pos[1] = this.gameHeight;
+      this.vector[1] = 0;
+    } else {
+      this.pos[1] += this.vector[1];
+    }
+
+
   }
 
 }
@@ -696,6 +723,7 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 const CANNON_DELAY = 300;
 const ROUND_TIME = 60;
+const KEYBOARD_CROSSHAIR_VEL = 15;
 
 class Game {
   constructor(board, canvas) {
@@ -775,7 +803,55 @@ class Game {
           }
           break;
         case " ":
+          e.preventDefault();
           this.handleLaserShot();
+          break;
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+
+      switch (e.key) {
+        case "ArrowLeft":
+          this.board.crossHair.vector[0] -= KEYBOARD_CROSSHAIR_VEL;
+          break;
+        case "ArrowRight":
+          this.board.crossHair.vector[0] += KEYBOARD_CROSSHAIR_VEL;
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          this.board.crossHair.vector[1] -= KEYBOARD_CROSSHAIR_VEL;
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          this.board.crossHair.vector[1] += KEYBOARD_CROSSHAIR_VEL;
+          break;
+      }
+    });
+
+    window.addEventListener("keyup", (e) => {
+      switch (e.key) {
+        case "ArrowLeft":
+          if(this.board.crossHair.vector[0] !== 0) {
+            this.board.crossHair.vector[0] += KEYBOARD_CROSSHAIR_VEL;
+          }
+          break;
+        case "ArrowRight":
+          if(this.board.crossHair.vector[0] !== 0) {
+            this.board.crossHair.vector[0] -= KEYBOARD_CROSSHAIR_VEL;
+          }
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          if(this.board.crossHair.vector[1] !== 0) {
+            this.board.crossHair.vector[1] += KEYBOARD_CROSSHAIR_VEL;
+          }
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          if(this.board.crossHair.vector[1] !== 0) {
+            this.board.crossHair.vector[1] -= KEYBOARD_CROSSHAIR_VEL;
+          }
           break;
       }
     });
