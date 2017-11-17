@@ -1,13 +1,12 @@
 body {
   width: inherit;
   font-family: 'Orbitron', sans-serif;
-  background: linear-gradient(#6699f6, #7FFFD4)
-
+  background: linear-gradient(#6699f6, #7FFFD4);
+  min-height: 700px;
 }
 
 h3 {
   line-height: 1;
-  font-sise
 }
 
 canvas {
@@ -57,6 +56,10 @@ canvas {
 }
 #start-head {
   font-size: 30px;
+}
+
+button:focus {
+  outline: none;
 }
 
 
