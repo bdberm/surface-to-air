@@ -529,7 +529,9 @@ const LASER_VEL = 10;
 
 const LASER_COLORS = {
   1: "#ff0101",
-  0: "#49fb35"
+  2: "#49fb35",
+  3: "#ccff15",
+  0: "#c32aff"
 };
 
 class Laser {
@@ -537,7 +539,7 @@ class Laser {
     this.startPos = startPos;
     this.length = LASER_LENGTH;
     this.width = LASER_WIDTH;
-    this.color = LASER_COLORS[level % 2];
+    this.color = LASER_COLORS[level % 4];
     this.vel = LASER_VEL;
     this.unitVector = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["d" /* calcUnitVector */])(startPos, endVectorPos);
     this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* calcPosDistAway */])(startPos, this.unitVector, this.length);
@@ -576,25 +578,27 @@ const BOMB_HEIGHT = 50;
 const BOMB_WIDTH = 50;
 const BOMB_MAX_VEL = 2.5;
 const BOMB_MIN_VEL = 1;
-const COLLIDABLE_WIDTH_RATIO = .41;
-const COLLIDABLE_HEIGHT_RATIO = 1;
 
 const BOMB_IMAGES = {
   1: "./assets/bomb.png",
-  0: "./assets/alien.png"
+  2: "./assets/alien.png",
+  3: "./assets/mushroom.png",
+  0: "./assets/spider.png"
 };
 
 const HITBOX_RATIOS = {
   1: [.41, 1],
-  0: [.70, .59],
+  2: [.70, .59],
+  3: [.65, .66],
+  0: [.92, .54]
 };
 
 
 class Bomb {
   constructor(startVectorPos, endVectorPos, level) {
     this.img = new Image();
-    this.img.src = BOMB_IMAGES[level % 2];
-    this.hitboxRatio = HITBOX_RATIOS[level % 2];
+    this.img.src = BOMB_IMAGES[level % 4];
+    this.hitboxRatio = HITBOX_RATIOS[level % 4];
     this.width = BOMB_WIDTH;
     this.height = BOMB_HEIGHT;
     this.vel =(Math.random() * (BOMB_MAX_VEL - BOMB_MIN_VEL)) + BOMB_MIN_VEL;
@@ -737,13 +741,14 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 
 const CANNON_DELAY = 300;
-//CHANGE BACK TO MINUTE
-const ROUND_TIME = 60;
+const ROUND_TIME = 30;
 const KEYBOARD_CROSSHAIR_VEL = 12.5;
 
 const BACKGROUNDS = {
   1: "./assets/mountains.jpg",
-  0: "./assets/moonscape.jpg",
+  2: "./assets/moonscape.jpg",
+  3: "./assets/mushroom_forest.jpg",
+  0: "./assets/desert.png",
 };
 
 class Game {
@@ -782,7 +787,7 @@ class Game {
 
   levelUp() {
     this.level += 1;
-    this.canvas.style.backgroundImage = `url(${BACKGROUNDS[this.level % 2]})`;
+    this.canvas.style.backgroundImage = `url(${BACKGROUNDS[this.level % 4]})`;
     this.board.level  = this.level;
     if (this.board.bombInterval > 200) {
       this.board.bombInterval -= 50;
