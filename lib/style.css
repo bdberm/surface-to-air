@@ -13,7 +13,7 @@ canvas {
   border: 2px solid blue;
   display: block;
   cursor: none;
-  background-image: url("../assets/moonscape.jpg");
+  background-image: url("../assets/mountains.jpg");
   background-size:cover;
   position: absolute;
 

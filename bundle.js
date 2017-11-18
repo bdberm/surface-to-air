@@ -163,6 +163,7 @@ class Board {
     this.scream = new Audio("./assets/scream.mp3");
     this.scream.volume = 0.6;
     this.paused = true;
+    this.level = 1;
     this.populateCities();
     this.renderCannon();
   }
@@ -172,7 +173,6 @@ class Board {
   }
 
   resetBoard() {
-
     this.lasers = [];
     this.bombs = [];
     this.lasers = [];
@@ -210,7 +210,7 @@ class Board {
 
 
   addLaser() {
-    const newLaser = new __WEBPACK_IMPORTED_MODULE_2__laser__["a" /* default */](this.mainCannon.endPos, this.crossHair.pos);
+    const newLaser = new __WEBPACK_IMPORTED_MODULE_2__laser__["a" /* default */](this.mainCannon.endPos, this.crossHair.pos, this.level);
     this.lasers.push(newLaser);
   }
 
@@ -526,15 +526,17 @@ const LASER_WIDTH = 3;
 const LASER_COLOR = "#ff0101";
 const LASER_VEL = 10;
 
-
-
+const LASER_COLORS = {
+  1: "#ff0101",
+  0: "#49fb35"
+};
 
 class Laser {
-  constructor(startPos, endVectorPos) {
+  constructor(startPos, endVectorPos, level) {
     this.startPos = startPos;
     this.length = LASER_LENGTH;
     this.width = LASER_WIDTH;
-    this.color = LASER_COLOR;
+    this.color = LASER_COLORS[level % 2];
     this.vel = LASER_VEL;
     this.unitVector = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["d" /* calcUnitVector */])(startPos, endVectorPos);
     this.endPos = Object(__WEBPACK_IMPORTED_MODULE_0__util_js__["c" /* calcPosDistAway */])(startPos, this.unitVector, this.length);
@@ -722,8 +724,10 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 
 const CANNON_DELAY = 300;
-const ROUND_TIME = 60;
+//CHANGE BACK TO MINUTE
+const ROUND_TIME = 5;
 const KEYBOARD_CROSSHAIR_VEL = 12.5;
+
 
 class Game {
   constructor(board, canvas) {
@@ -759,6 +763,7 @@ class Game {
 
   levelUp() {
     this.level += 1;
+    this.board.level  = this.level;
     if (this.board.bombInterval > 200) {
       this.board.bombInterval -= 50;
     }
