@@ -741,7 +741,7 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 
 const CANNON_DELAY = 300;
-const ROUND_TIME = 30;
+const ROUND_TIME = 60;
 const KEYBOARD_CROSSHAIR_VEL = 12.5;
 
 const BACKGROUNDS = {
