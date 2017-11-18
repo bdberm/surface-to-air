@@ -200,7 +200,7 @@ class Board {
 
     window.setInterval(() => {
       if (!this.paused) {
-        const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_6__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_6__util__["a" /* RandomEndPos */])(this.width,this.height));
+        const newBomb = new __WEBPACK_IMPORTED_MODULE_3__bomb__["a" /* default */](Object(__WEBPACK_IMPORTED_MODULE_6__util__["b" /* RandomStartPos */])(this.width), Object(__WEBPACK_IMPORTED_MODULE_6__util__["a" /* RandomEndPos */])(this.width,this.height), this.level);
         this.bombs.push(newBomb);
       }
     }, this.bombInterval);
@@ -577,12 +577,24 @@ const BOMB_WIDTH = 50;
 const BOMB_MAX_VEL = 2.5;
 const BOMB_MIN_VEL = 1;
 const COLLIDABLE_WIDTH_RATIO = .41;
+const COLLIDABLE_HEIGHT_RATIO = 1;
+
+const BOMB_IMAGES = {
+  1: "./assets/bomb.png",
+  0: "./assets/alien.png"
+};
+
+const HITBOX_RATIOS = {
+  1: [.41, 1],
+  0: [.70, .59],
+};
 
 
 class Bomb {
-  constructor(startVectorPos, endVectorPos) {
+  constructor(startVectorPos, endVectorPos, level) {
     this.img = new Image();
-    this.img.src = "./assets/bomb.png";
+    this.img.src = BOMB_IMAGES[level % 2];
+    this.hitboxRatio = HITBOX_RATIOS[level % 2];
     this.width = BOMB_WIDTH;
     this.height = BOMB_HEIGHT;
     this.vel =(Math.random() * (BOMB_MAX_VEL - BOMB_MIN_VEL)) + BOMB_MIN_VEL;
@@ -600,11 +612,11 @@ class Bomb {
   }
 
   hitbox() {
-    const xAdjust = ((1 - COLLIDABLE_WIDTH_RATIO) * this.width)/2;
+    const xAdjust = ((1 - this.hitboxRatio[0]) * this.width)/2;
+    const yAdjust = ((1 - this.hitboxRatio[1]) * this.height)/2;
 
-
-    const topLeft = [this.startPos[0] + xAdjust , this.startPos[1]];
-    const bottomRight = [this.startPos[0] + this.width - xAdjust, this.startPos[1] + this.height];
+    const topLeft = [this.startPos[0] + xAdjust , this.startPos[1] + yAdjust];
+    const bottomRight = [this.startPos[0] + this.width - xAdjust, this.startPos[1] + this.height - yAdjust];
 
     return [topLeft, bottomRight];
 
@@ -726,7 +738,7 @@ const checkPosInHitbox = (pos, hitbox) => {
 
 const CANNON_DELAY = 300;
 //CHANGE BACK TO MINUTE
-const ROUND_TIME = 5;
+const ROUND_TIME = 60;
 const KEYBOARD_CROSSHAIR_VEL = 12.5;
 
 const BACKGROUNDS = {
