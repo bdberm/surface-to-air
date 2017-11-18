@@ -139,6 +139,7 @@ const BOMB_INTERVAL_START = 1000;
 const COLLISION_INTERVAL = 10;
 
 
+
 class Board {
   constructor(canvas) {
     this.canvas = canvas;
@@ -728,11 +729,16 @@ const CANNON_DELAY = 300;
 const ROUND_TIME = 5;
 const KEYBOARD_CROSSHAIR_VEL = 12.5;
 
+const BACKGROUNDS = {
+  1: "./assets/mountains.jpg",
+  0: "./assets/moonscape.jpg",
+};
 
 class Game {
   constructor(board, canvas) {
     this.board = board;
     this.canvas = canvas;
+    this.canvas.style.backgroundImage = `url(${BACKGROUNDS[1]})`;
     this.playPause = document.getElementById('play-pause');
     this.timeDisplay = document.getElementById('timer');
     this.citiesRemaining = document.getElementById('cities-remaining');
@@ -758,11 +764,13 @@ class Game {
     this.timer.seconds = ROUND_TIME;
     this.backgroundMusic.pause();
     this.level = 1;
+    this.canvas.style.backgroundImage = `url(${BACKGROUNDS[1]})`;
     this.board.resetBoard();
   }
 
   levelUp() {
     this.level += 1;
+    this.canvas.style.backgroundImage = `url(${BACKGROUNDS[this.level % 2]})`;
     this.board.level  = this.level;
     if (this.board.bombInterval > 200) {
       this.board.bombInterval -= 50;
