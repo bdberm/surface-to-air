@@ -180,7 +180,6 @@ class Board {
     this.explosions = [];
     this.cities = [];
     this.paused = true;
-    this.level = 1;
     this.populateCities();
   }
 
@@ -784,6 +783,7 @@ class Game {
     this.timer.seconds = ROUND_TIME;
     this.backgroundMusic.pause();
     this.level = 1;
+    this.board.level = 1;
     this.canvas.style.backgroundImage = `url(${BACKGROUNDS[1]})`;
     this.board.resetBoard();
   }
