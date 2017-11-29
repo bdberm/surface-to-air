@@ -768,6 +768,8 @@ class Game {
     this.laserShot.volume = 0.2;
     this.backgroundMusic = new Audio("./assets/background.mp3");
     this.backgroundMusic.loop = true;
+    this.muteButton = document.getElementById('mute-button');
+    this.muted = false;
     this.display = this.display.bind(this);
     this.canShoot = true;
     this.timer = new __WEBPACK_IMPORTED_MODULE_1__timer__["a" /* default */](ROUND_TIME);
@@ -804,6 +806,7 @@ class Game {
     this.display();
     this.board.render();
     this.playPause.textContent = "Play";
+
     this.canvas.addEventListener("mousemove", (e) => {
 
       const coords = [e.offsetX, e.offsetY];
@@ -906,6 +909,21 @@ class Game {
       this.resetGame();
     });
 
+    this.muteButton.addEventListener("click", (e) => {
+      this.muteUnmute();
+    });
+
+  }
+
+  muteUnmute() {
+    this.muted = this.muted ? false : true;
+    if (!this.muted && !this.board.paused) {
+      this.backgroundMusic.play();
+    }
+    if (this.muted) {
+      this.backgroundMusic.pause();
+    }
+    this.muteButton.blur();
   }
 
   adjustCrossHairVec() {
@@ -964,7 +982,9 @@ class Game {
         this.pauseModal.className = "pop-up visible";
       }
     } else {
-      this.backgroundMusic.play();
+      if (!this.muted) {
+        this.backgroundMusic.play();
+      }
       this.startModal.className = "pop-up";
       this.pauseModal.className = "pop-up";
       this.canvas.focus();
@@ -979,7 +999,6 @@ class Game {
       window.setTimeout(() => {this.canShoot = true;}, CANNON_DELAY);
     }
   }
-
 
 
   display() {
