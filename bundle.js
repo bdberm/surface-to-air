@@ -917,6 +917,11 @@ class Game {
       this.muteUnmute();
     });
 
+    window.addEventListener('blur', (e) => {
+      this.board.paused = false;
+      this.handlePlayPause();
+    });
+
   }
 
   muteUnmute() {
